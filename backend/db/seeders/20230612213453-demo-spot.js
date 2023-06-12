@@ -11,6 +11,7 @@ module.exports = {
     options.tableName = 'Spots';
     await queryInterface.bulkInsert(options,[
       {
+        ownerId: 1,
         address: "123 Disney Lane",
         city: "San Francisco",
         state: "California",
