@@ -53,11 +53,8 @@ router.post(
 
         await setTokenCookie(res, safeUser);
 
-        const csrfToken = req.csrfToken();
-
         return res.json({
-            user: safeUser,
-            token: csrfToken
+            user: safeUser
         });
     }
 );
