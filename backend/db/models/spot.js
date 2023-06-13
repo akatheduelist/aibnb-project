@@ -31,7 +31,11 @@ module.exports = (sequelize, DataTypes) => {
   Spot.init({
     ownerId: {
       allowNull: false,
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
+      references: {
+        model: Users,
+        key: 'id'
+      }
     },
     address: {
       allowNull: false,
