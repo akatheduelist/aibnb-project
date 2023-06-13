@@ -17,7 +17,7 @@ module.exports = {
       },
       ownerId: {
         allowNull: false,
-        reference: {
+        references: {
           model: 'Users',
           key: 'id'
         },
