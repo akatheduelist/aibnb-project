@@ -21,6 +21,30 @@ module.exports = {
         name: "App Academy",
         description: "Place where web developers are created",
         price: 123
+      },
+      {
+        ownerId: 2,
+        address: "1600 Pennsylvania Avenue NW 20500",
+        city: "Washington",
+        state: "District of Columbia",
+        country: "United States of America",
+        lat: 38.89787,
+        lng: -77.03652,
+        name: "The White House",
+        description: "Landmark, historic home & office of the United States president, with tours for visitors.",
+        price: 1000000
+      },
+      {
+        ownerId: 3,
+        address: "312 Elvis Presley Boulevard",
+        city: "Memphis",
+        state: "Tennessee",
+        country: "United States of America",
+        lat: 35.04788,
+        lng: -90.02595,
+        name: "Graceland",
+        description: "Elvis Presley's famed estate featuring mansion tours, exhibits, a car museum & 2 jets.",
+        price: 12
       }
     ], {});
   },
