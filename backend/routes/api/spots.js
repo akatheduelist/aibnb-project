@@ -9,6 +9,82 @@ const { requireAuth } = require('../../utils/auth.js');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
+// Middleware to validate the input for a new spot
+const validateNewSpot = [
+    check('address')
+        .exists({ checkFalsy: true })
+        .withMessage('Street address is required'),
+    check('city')
+        .exists({ checkFalsy: true })
+        .withMessage('City is required'),
+    check('state')
+        .exists({ checkFalsy: true })
+        .withMessage('State is required'),
+    check('country')
+        .exists({ checkFalsy: true })
+        .withMessage('Country is required'),
+    check('lat')
+        .exists({ checkFalsy: true })
+        .isDecimal({ force_decimal: true })
+        .withMessage('Latitude is not valid'),
+    check('lng')
+        .exists({ checkFalsy: true })
+        .isDecimal({ force_decimal: true })
+        .withMessage('Longitude is not valid'),
+    check('name')
+        .exists({ checkFalsy: true })
+        .isLength({ max: 50 })
+        .withMessage('Name must be less than 50 characters'),
+    check('description')
+        .exists({ checkFalsy: true })
+        .withMessage('Description is required'),
+    check('price')
+        .exists({ checkFalsy: true })
+        .withMessage('Price per day is required'),
+    handleValidationErrors
+];
+
+router.post('/:spotId/images', requireAuth, async (req, res, next) => {
+    // Get the current logged in users id
+    const { user } = req;
+    let ownerId;
+    if (user) {
+        ownerId = user.id;
+    }
+
+    // Get the spot related to the provided spotId
+    const findSpotById = await Spot.findByPk(req.params.spotId);
+
+    // If provided spotId is not found respond with 404 error
+    if (!findSpotById) {
+        const err = new Error("Spot couldn't be found");
+        err.status = 404;
+        return next(err);
+    }
+
+    // If provided spotId is not owned by the current logged in user respond with 403 error
+    if (findSpotById.ownerId !== ownerId) {
+        const err = new Error("Forbidden");
+        err.status = 403;
+        return next(err);
+    };
+
+    // Get image info from the request body
+    const { url, preview } = req.body;
+    const newSpotImage = await SpotImage.create({
+        spotId: req.params.spotId,
+        url,
+        preview
+    });
+
+    // Return information on the new image for associated spot
+    return res.json({
+        id: newSpotImage.id,
+        url: newSpotImage.url,
+        preview: newSpotImage.preview
+    });
+});
+
 // Get all Spots owned by the Current User
 router.get('/current', requireAuth, async (req, res) => {
     const { user } = req;
@@ -77,41 +153,6 @@ router.get('/current', requireAuth, async (req, res) => {
     }
 });
 
-// Middleware to validate the input for a new spot
-const validateNewSpot = [
-    check('address')
-        .exists({ checkFalsy: true })
-        .withMessage('Street address is required'),
-    check('city')
-        .exists({ checkFalsy: true })
-        .withMessage('City is required'),
-    check('state')
-        .exists({ checkFalsy: true })
-        .withMessage('State is required'),
-    check('country')
-        .exists({ checkFalsy: true })
-        .withMessage('Country is required'),
-    check('lat')
-        .exists({ checkFalsy: true })
-        .isDecimal({ force_decimal: true })
-        .withMessage('Latitude is not valid'),
-    check('lng')
-        .exists({ checkFalsy: true })
-        .isDecimal({ force_decimal: true })
-        .withMessage('Longitude is not valid'),
-    check('name')
-        .exists({ checkFalsy: true })
-        .isLength({ max: 50 })
-        .withMessage('Name must be less than 50 characters'),
-    check('description')
-        .exists({ checkFalsy: true })
-        .withMessage('Description is required'),
-    check('price')
-        .exists({ checkFalsy: true })
-        .withMessage('Price per day is required'),
-    handleValidationErrors
-];
-
 // Edit a Spot
 router.put('/:spotId', [requireAuth, validateNewSpot], async (req, res, next) => {
     // Get the current logged in users id
@@ -137,7 +178,6 @@ router.put('/:spotId', [requireAuth, validateNewSpot], async (req, res, next) =>
     }
 
     // If provided spotId is not owned by the current logged in user respond with 403 error
-    console.log(findSpotById);
     if (findSpotById.ownerId !== ownerId) {
         const err = new Error("Forbidden");
         err.status = 403;
