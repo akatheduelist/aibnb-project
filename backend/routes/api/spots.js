@@ -77,6 +77,7 @@ router.get('/current', requireAuth, async (req, res) => {
     }
 });
 
+// Middleware to validate the input for a new spot
 const validateNewSpot = [
     check('address')
         .exists({ checkFalsy: true })
@@ -111,16 +112,84 @@ const validateNewSpot = [
     handleValidationErrors
 ];
 
-// Create a Spot
-router.post('/', [validateNewSpot, requireAuth], async (req, res) => {
-    const { address, city, state, country, lat, lng, name, description, price } = req.body;
-
+// Edit a Spot
+router.put('/:spotId', [requireAuth, validateNewSpot], async (req, res, next) => {
+    // Get the current logged in users id
     const { user } = req;
     let ownerId;
     if (user) {
         ownerId = user.id;
     }
 
+    // Get the spot related to the provided spotId
+    const { spotId } = req.params;
+    const findSpotById = await Spot.findOne({
+        where: {
+            id: spotId
+        }
+    });
+
+    // If provided spotId is not found respond with 404 error
+    if (!findSpotById) {
+        const err = new Error("Spot couldn't be found");
+        err.status = 404;
+        return next(err);
+    }
+
+    // If provided spotId is not owned by the current logged in user respond with 403 error
+    console.log(findSpotById);
+    if (findSpotById.ownerId !== ownerId) {
+        const err = new Error("Forbidden");
+        err.status = 403;
+        return next(err);
+    }
+    
+    // Update spot with provided info from request body
+    const { address, city, state, country, lat, lng, name, description, price } = req.body;
+    const updateSpotById = await findSpotById.update({
+        ownerId,
+        address,
+        city,
+        state,
+        country,
+        lat,
+        lng,
+        name,
+        description,
+        price
+    });
+
+    // Respond with values of updated spot
+    return res.json({
+        id: updateSpotById.id,
+        ownerId: updateSpotById.ownerId,
+        address: updateSpotById.address,
+        city: updateSpotById.city,
+        state: updateSpotById.state,
+        country: updateSpotById.country,
+        lat: updateSpotById.lat,
+        lng: updateSpotById.lng,
+        name: updateSpotById.name,
+        description: updateSpotById.description,
+        price: updateSpotById.price,
+        createdAt: updateSpotById.createdAt,
+        updatedAt: updateSpotById.updatedAt
+    });
+});
+
+
+// Create a Spot
+router.post('/', [requireAuth, validateNewSpot], async (req, res) => {
+    const { address, city, state, country, lat, lng, name, description, price } = req.body;
+
+    // Get the current logged in users id
+    const { user } = req;
+    let ownerId;
+    if (user) {
+        ownerId = user.id;
+    }
+
+    // Create a new spot and assign it to the current user as ownerId
     const newSpot = await Spot.create({
         ownerId,
         address,
@@ -134,6 +203,7 @@ router.post('/', [validateNewSpot, requireAuth], async (req, res) => {
         price
     });
 
+    // Respond with values of created spot
     return res.json({
         address: newSpot.address,
         city: newSpot.city,
