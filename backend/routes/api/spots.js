@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Import models used by router
-const { Spot } = require('../../db/models');
+const { Spot, SpotImage } = require('../../db/models');
 
 // Import middleware used by router
 const { requireAuth } = require('../../utils/auth.js');
@@ -214,6 +214,48 @@ router.delete('/:spotId', [requireAuth], async (req, res, next) => {
     // Respond with successful deleted message
     return res.json({
         message: "Successfully deleted"
+    });
+});
+
+// Get details of a Spot from an id
+router.get('/:spotId', async (req, res, next) => {
+    // Get the spot related to the provided spotId
+    const { spotId } = req.params;
+    const findSpotById = await Spot.findByPk(spotId);
+
+    // If provided spotId is not found respond with 404 error
+    if (!findSpotById) {
+        const err = new Error("Spot couldn't be found");
+        err.status = 404;
+        return next(err);
+    }
+
+    // Get images related to specific spotId
+    const findImagesBySpotId = await SpotImage.findAll({
+        where: {
+            spotId
+        },
+        attributes: {
+            exclude: ['spotId', 'createdAt', 'updatedAt']
+        }
+    });
+
+    console.log(findSpotById)
+
+    // Respond with spot information requested by spotId
+    return res.json({
+        id: findSpotById.id,
+        ownerId: findSpotById.ownerId,
+        city: findSpotById.state,
+        country: findSpotById.country,
+        lat: findSpotById.lat,
+        lng: findSpotById.lng,
+        name: findSpotById.name,
+        descriptions: findSpotById.description,
+        createdAt: findSpotById.createdAt,
+        updatedAt: findSpotById.updatedAt,
+        avgStarRating: 'wat',
+        SpotImages: findImagesBySpotId
     });
 });
 
