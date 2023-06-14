@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Import models used by router
-const { Spot, SpotImage } = require('../../db/models');
+const { Spot, SpotImage, User, Review } = require('../../db/models');
 
 // Import middleware used by router
 const { requireAuth } = require('../../utils/auth.js');
@@ -240,7 +240,29 @@ router.get('/:spotId', async (req, res, next) => {
         }
     });
 
-    console.log(findSpotById)
+    // Get owner related to specific spotId
+    const { ownerId } = findSpotById;
+    const findSpotOwnerById = await User.findByPk(ownerId, {
+        attributes: {
+            exclude: ['username']
+        }
+    });
+
+    // Get the number of reviews associated with this spot
+    const findReviewsById = await Review.findAll({
+        where: {
+            spotId
+        }
+    });
+    const numOfReviews = findReviewsById.length;
+
+    // Calculate the average star rating associated with this spot
+    let totalRating = 0;
+    for (let i = 0; i < numOfReviews; i++) {
+        const star = findReviewsById[i];
+        totalRating += star.stars;
+    }
+    const avgStarRating = (totalRating / numOfReviews).toFixed(1);
 
     // Respond with spot information requested by spotId
     return res.json({
@@ -254,8 +276,10 @@ router.get('/:spotId', async (req, res, next) => {
         descriptions: findSpotById.description,
         createdAt: findSpotById.createdAt,
         updatedAt: findSpotById.updatedAt,
-        avgStarRating: 'wat',
-        SpotImages: findImagesBySpotId
+        numReviews: numOfReviews,
+        avgStarRating,
+        SpotImages: findImagesBySpotId,
+        Owner: findSpotOwnerById
     });
 });
 
