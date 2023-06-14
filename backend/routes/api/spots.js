@@ -143,7 +143,7 @@ router.put('/:spotId', [requireAuth, validateNewSpot], async (req, res, next) =>
         err.status = 403;
         return next(err);
     }
-    
+
     // Update spot with provided info from request body
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
     const updateSpotById = await findSpotById.update({
@@ -177,6 +177,45 @@ router.put('/:spotId', [requireAuth, validateNewSpot], async (req, res, next) =>
     });
 });
 
+// Delete a Spot
+router.delete('/:spotId', [requireAuth], async (req, res, next) => {
+    // Get the current logged in users id
+    const { user } = req;
+    let ownerId;
+    if (user) {
+        ownerId = user.id;
+    }
+
+    // Get the spot related to the provided spotId
+    const { spotId } = req.params;
+    const findSpotById = await Spot.findOne({
+        where: {
+            id: spotId
+        }
+    });
+
+    // If provided spotId is not found respond with 404 error
+    if (!findSpotById) {
+        const err = new Error("Spot couldn't be found");
+        err.status = 404;
+        return next(err);
+    }
+
+    // If provided spotId is not owned by the current logged in user respond with 403 error
+    if (findSpotById.ownerId !== ownerId) {
+        const err = new Error("Forbidden");
+        err.status = 403;
+        return next(err);
+    }
+
+    // Delete spot coorisponding to provided spotId
+    await findSpotById.destroy();
+
+    // Respond with successful deleted message
+    return res.json({
+        message: "Successfully deleted"
+    });
+});
 
 // Create a Spot
 router.post('/', [requireAuth, validateNewSpot], async (req, res) => {
