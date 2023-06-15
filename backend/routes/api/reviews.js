@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Import models used by router
-const { Spot, SpotImage, ReviewImage, User, Review } = require('../../db/models');
+const { Spot, ReviewImage, User, Review } = require('../../db/models');
 
 // Import middleware used by router
 const { requireAuth } = require('../../utils/auth.js');

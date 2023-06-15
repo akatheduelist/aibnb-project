@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Import models used by router
-const { Spot, SpotImage, User, Review } = require('../../db/models');
+const { Spot, SpotImage, User, Review, ReviewImage } = require('../../db/models');
 
 // Import middleware used by router
 const { requireAuth } = require('../../utils/auth.js');
@@ -43,6 +43,37 @@ const validateNewSpot = [
         .withMessage('Price per day is required'),
     handleValidationErrors
 ];
+
+// Get all Reviews by a Spot's id
+router.get('/:spotId/reviews', async (req, res, next) => {
+    // Get the reviews related to the provided spotId
+    const { spotId } = req.params;
+    const findReviewsBySpotId = await Review.findAll({
+        where: {
+            spotId,
+        },
+        include: [
+            {
+                model: User,
+                attributes: ['id', 'firstName', 'lastName']
+            },
+            {
+                model: ReviewImage,
+                attributes: ['id', 'url']
+            }],
+    });
+
+    // If provided spotId is not found respond with 404 error
+    if (findReviewsBySpotId.length < 1) {
+        const err = new Error("Spot couldn't be found");
+        err.status = 404;
+        return next(err);
+    } else {
+            return res.json({
+                Reviews: findReviewsBySpotId
+            });
+    };
+});
 
 router.post('/:spotId/images', requireAuth, async (req, res, next) => {
     // Get the current logged in users id
