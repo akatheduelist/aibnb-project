@@ -9,76 +9,98 @@ const { requireAuth } = require('../../utils/auth.js');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
-// Middleware to validate the input for ********
-const validate = [
-    check('address')
+// Middleware to validate the input for a new Review
+const validateNewReview = [
+    check('review')
         .exists({ checkFalsy: true })
-        .withMessage('Street address is required'),
-    check('city')
+        .withMessage('Review text is required'),
+    check('stars')
         .exists({ checkFalsy: true })
-        .withMessage('City is required'),
-    check('state')
-        .exists({ checkFalsy: true })
-        .withMessage('State is required'),
-    check('country')
-        .exists({ checkFalsy: true })
-        .withMessage('Country is required'),
-    check('lat')
-        .exists({ checkFalsy: true })
-        .isDecimal({ force_decimal: true })
-        .withMessage('Latitude is not valid'),
-    check('lng')
-        .exists({ checkFalsy: true })
-        .isDecimal({ force_decimal: true })
-        .withMessage('Longitude is not valid'),
-    check('name')
-        .exists({ checkFalsy: true })
-        .isLength({ max: 50 })
-        .withMessage('Name must be less than 50 characters'),
-    check('description')
-        .exists({ checkFalsy: true })
-        .withMessage('Description is required'),
-    check('price')
-        .exists({ checkFalsy: true })
-        .withMessage('Price per day is required'),
+        .isInt({ min: 1, max: 5 })
+        .withMessage('Stars must be an integer from 1 to 5'),
     handleValidationErrors
 ];
 
+// Edit a Review
+router.put('/:reviewId', [ requireAuth, validateNewReview ], async (req, res, next) => {
+    // Get the current logged in users id
+    const { user } = req;
+    let userId;
+    if (user) userId = user.id;
+
+    // Get the review related to the provided reviewId
+    const { reviewId } = req.params;
+    const findReviewById = await Review.findByPk(reviewId);
+    console.log(findReviewById)
+    // If provided reviewId is not found respond with 404 error
+    if (!findReviewById) {
+        const err = new Error("Review couldn't be found");
+        err.status = 404;
+        return next(err);
+    }
+
+    // If provided reviewId is not owned by the current logged in user respond with 403 error
+    if (findReviewById.userId !== userId) {
+        const err = new Error("Forbidden");
+        err.status = 403;
+        return next(err);
+    }
+
+    // Update review with provided info from request body
+    const { review, stars } = req.body;
+    const updateReviewById = await findReviewById.update({
+        review,
+        stars,
+        userId
+    });
+
+    // Respond with values of updated spot
+    return res.json({
+        id: updateReviewById.id,
+        userId: updateReviewById.userId,
+        spotId: updateReviewById.spotId,
+        review: updateReviewById.review,
+        stars: updateReviewById.stars,
+        createdAt: updateReviewById.createdAt,
+        updatedAt: updateReviewById.updatedAt
+    });
+});
+
 // Delete a Review
 router.delete('/:reviewId', requireAuth, async (req, res, next) => {
-        // Get the current logged in users id
-        const { user } = req;
-        let ownerId;
-        if (user) {
-            ownerId = user.id;
-        }
+    // Get the current logged in users id
+    const { user } = req;
+    let ownerId;
+    if (user) {
+        ownerId = user.id;
+    }
 
-        // Get the Review related to the provided spotId
-        const { reviewId } = req.params;
-        const findReviewById = await Review.findByPk(reviewId);
+    // Get the Review related to the provided spotId
+    const { reviewId } = req.params;
+    const findReviewById = await Review.findByPk(reviewId);
 
-        // If provided reviewId is not found respond with 404 error
-        if (!findReviewById) {
-            const err = new Error("Review couldn't be found");
-            err.status = 404;
-            return next(err);
-        }
+    // If provided reviewId is not found respond with 404 error
+    if (!findReviewById) {
+        const err = new Error("Review couldn't be found");
+        err.status = 404;
+        return next(err);
+    }
 
-        // If provided reviewId is not owned by the current logged in user respond with 403 error
-        if (findReviewById.userId !== ownerId) {
-            const err = new Error("Forbidden");
-            err.status = 403;
-            return next(err);
-        }
+    // If provided reviewId is not owned by the current logged in user respond with 403 error
+    if (findReviewById.userId !== ownerId) {
+        const err = new Error("Forbidden");
+        err.status = 403;
+        return next(err);
+    }
 
-        // Delete review coorisponding to provided reviewId
-        await findReviewById.destroy();
+    // Delete review coorisponding to provided reviewId
+    await findReviewById.destroy();
 
-        // Respond with successful deleted message
-        return res.json({
-            message: "Successfully deleted"
-        });
-})
+    // Respond with successful deleted message
+    return res.json({
+        message: "Successfully deleted"
+    });
+});
 
 // Get all Reviews of the Current User
 router.get('/current', requireAuth, async (req, res, _next) => {
@@ -121,7 +143,7 @@ router.get('/current', requireAuth, async (req, res, _next) => {
         getOwnerReviews.forEach(element => {
             let review = element.toJSON();
             review.Spot.previewImage = "image url";
-            payload.push(review)
+            payload.push(review);
         });
 
         return res.json({
