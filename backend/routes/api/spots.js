@@ -44,6 +44,80 @@ const validateNewSpot = [
     handleValidationErrors
 ];
 
+// Middleware to validate the input for a new Review
+const validateNewReview = [
+    check('review')
+        .exists({ checkFalsy: true })
+        .withMessage('Review text is required'),
+    check('stars')
+        .exists({ checkFalsy: true })
+        .isInt({ min: 1, max: 5 })
+        .withMessage('Stars must be an integer from 1 to 5'),
+    handleValidationErrors
+];
+
+// Create a Review for a Spot based on the Spot's id
+router.post('/:spotId/reviews', [requireAuth, validateNewReview], async (req, res, next) => {
+    // If user is currently logged in, get userId of user
+    const { user } = req;
+    const { spotId } = req.params;
+    const { review, stars } = req.body;
+
+    // Get all spots owned by the current user
+    const getOwnerReviews = await Review.findOne({
+        where: {
+            userId: user.id,
+            spotId
+        }
+    });
+
+    if (getOwnerReviews) {
+        const err = new Error("User already has a review for this spot");
+        err.status = 500;
+        return next(err);
+    }
+
+    const findReviewsBySpotId = await Review.findOne({
+        where: {
+            spotId,
+        },
+    })
+
+    // If provided spotId is not found respond with 404 error
+    if (!findReviewsBySpotId) {
+        const err = new Error("Spot couldn't be found");
+        err.status = 404;
+        return next(err);
+    }
+
+    if (user) {
+        let safeUser = user.id;
+        // Post a new review related to the provided spotId
+
+        const spot = Number(spotId);
+
+        const createReviewBySpotId = await Review.create({
+            review,
+            stars,
+            spotId: spot,
+            userId: safeUser
+        });
+
+        res.status(201);
+        return res.json({
+            id: createReviewBySpotId.id,
+            userId: createReviewBySpotId.userId,
+            spotId: createReviewBySpotId.spotId,
+            review: createReviewBySpotId.review,
+            stars: createReviewBySpotId.stars,
+            createdAt: createReviewBySpotId.createdAt,
+            updatedAt: createReviewBySpotId.updatedAt
+        });
+
+    }
+
+});
+
 // Get all Reviews by a Spot's id
 router.get('/:spotId/reviews', async (req, res, next) => {
     // Get the reviews related to the provided spotId
@@ -69,9 +143,9 @@ router.get('/:spotId/reviews', async (req, res, next) => {
         err.status = 404;
         return next(err);
     } else {
-            return res.json({
-                Reviews: findReviewsBySpotId
-            });
+        return res.json({
+            Reviews: findReviewsBySpotId
+        });
     };
 });
 
