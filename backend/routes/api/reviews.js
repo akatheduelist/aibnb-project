@@ -10,7 +10,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 // Middleware to validate the input for ********
-const validateNewSpot = [
+const validate = [
     check('address')
         .exists({ checkFalsy: true })
         .withMessage('Street address is required'),
@@ -43,6 +43,42 @@ const validateNewSpot = [
         .withMessage('Price per day is required'),
     handleValidationErrors
 ];
+
+// Delete a Review
+router.delete('/:reviewId', requireAuth, async (req, res, next) => {
+        // Get the current logged in users id
+        const { user } = req;
+        let ownerId;
+        if (user) {
+            ownerId = user.id;
+        }
+
+        // Get the Review related to the provided spotId
+        const { reviewId } = req.params;
+        const findReviewById = await Review.findByPk(reviewId);
+
+        // If provided reviewId is not found respond with 404 error
+        if (!findReviewById) {
+            const err = new Error("Review couldn't be found");
+            err.status = 404;
+            return next(err);
+        }
+
+        // If provided reviewId is not owned by the current logged in user respond with 403 error
+        if (findReviewById.userId !== ownerId) {
+            const err = new Error("Forbidden");
+            err.status = 403;
+            return next(err);
+        }
+
+        // Delete review coorisponding to provided reviewId
+        await findReviewById.destroy();
+
+        // Respond with successful deleted message
+        return res.json({
+            message: "Successfully deleted"
+        });
+})
 
 // Get all Reviews of the Current User
 router.get('/current', requireAuth, async (req, res, _next) => {
