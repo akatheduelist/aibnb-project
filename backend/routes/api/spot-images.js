@@ -6,8 +6,6 @@ const { SpotImage, Spot } = require("../../db/models");
 
 // Import middleware used by router
 const { requireAuth } = require("../../utils/auth.js");
-const { check } = require("express-validator");
-const { handleValidationErrors } = require("../../utils/validation");
 
 //Delete a Spot Image
 router.delete("/:imageId", requireAuth, async (req, res, next) => {
