@@ -311,6 +311,7 @@ router.get("/:spotId/reviews", async (req, res, next) => {
 	}
 });
 
+// Add an Image to a Spot based on the Spot's id
 router.post("/:spotId/images", requireAuth, async (req, res, next) => {
 	// Get the current logged in users id
 	const { user } = req;
@@ -499,7 +500,7 @@ router.put(
 );
 
 // Delete a Spot
-router.delete("/:spotId", [requireAuth], async (req, res, next) => {
+router.delete("/:spotId", requireAuth, async (req, res, next) => {
 	// Get the current logged in users id
 	const { user } = req;
 	let ownerId;

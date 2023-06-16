@@ -141,7 +141,7 @@ router.put(
 	}
 );
 
-//Delete an existing booking.
+// Delete a Booking
 router.delete("/:bookingId", requireAuth, async (req, res, next) => {
 	// Get the current logged in users id
 	const { user } = req;

@@ -6,10 +6,8 @@ const { ReviewImage, Spot, Review } = require("../../db/models");
 
 // Import middleware used by router
 const { requireAuth } = require("../../utils/auth.js");
-const { check } = require("express-validator");
-const { handleValidationErrors } = require("../../utils/validation");
 
-//Delete an existing image for a Review.
+// Delete a Review Image
 router.delete("/:imageId", requireAuth, async (req, res, next) => {
 	const { user } = req;
 	const { imageId } = req.params;
