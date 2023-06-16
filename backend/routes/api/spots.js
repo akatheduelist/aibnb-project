@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { Op } = require("sequelize");
 
 // Import models used by router
 const {
@@ -61,78 +62,82 @@ const validateNewReview = [
 	handleValidationErrors,
 ];
 
+const validateNewBooking = [
+	check("startDate")
+		.exists({ checkFalsy: true })
+		.withMessage("Start date is required")
+		.custom(async (value, { req }) => {
+			const exitstingStartDate = await Booking.findOne({
+				where: {
+					spotId: req.params.spotId,
+					startDate: value,
+				},
+			});
+			if (exitstingStartDate) {
+				throw new Error(
+					"Start date conflicts with an existing booking"
+				);
+			}
+		}),
+	check("endDate").exists({ checkFalsy: true }).isDate(),
+	check("endDate").custom(async (value, { req }) => {
+		let startDate = new Date(req.body.startDate).getTime();
+		let endDate = new Date(value).getTime();
+		if (endDate <= startDate) {
+			throw new Error("end Date cannot be on or before start Date");
+		}
+		return value;
+	}),
+	handleValidationErrors,
+];
+
 // Create a Booking from a Spot based on the Spot's id
-// router.post(
-// 	"/:spotId/bookings",
-// 	[requireAuth, validateNewBooking],
-// 	async (req, res, next) => {
-// 		// If user is currently logged in, get userId of user
-// 		const { user } = req;
-// 		const { spotId } = req.params;
-// 		const { startDate, endDate } = req.body;
+router.post(
+	"/:spotId/bookings",
+	[requireAuth, validateNewBooking],
+	async (req, res, next) => {
+		// If user is currently logged in, get userId of user
+		const { user } = req;
+		const { spotId } = req.params;
+		const { startDate, endDate } = req.body;
 
-// 		// Get spot based on spotId
-// 		const getSpotById = await Spot.findByPk(spotId);
+		// Get spot based on spotId
+		const getSpotById = await Spot.findByPk(spotId);
 
-// 		// Get all spots owned by the current user
-// 		const isOwnerOfSpot = await Spot.findOne({
-// 			where: {
-// 				ownerId: user.id,
-// 				spotId,
-// 			},
-// 		});
+		// If provided spotId is not found respond with 404 error
+		if (!getSpotById) {
+			const err = new Error("Spot couldn't be found");
+			err.status = 404;
+			return next(err);
+		}
 
-// 		// Spot must NOT belong to the current user
-// 		if (isOwnerOfSpot) {
-//             const err = new Error("Spot cannot belong to current user")
-//             return next(err)
-//         }
+		// Spot must NOT belong to the current user
+		if (getSpotById.ownerId === user.id) {
+			const err = new Error(
+				"Booking spot cannot belong to the current user"
+			);
+			err.status = 403;
+			return next(err);
+		}
 
-// 		// if (getOwnerBookings) {
-// 		// 	const err = new Error("User already has a review for this spot");
-// 		// 	err.status = 500;
-// 		// 	return next(err);
-// 		// }
+		const createBookingBySpotId = await Booking.create({
+			spotId,
+			userId: user.id,
+			startDate,
+			endDate,
+		});
 
-// 		const findReviewsBySpotId = await Booking.findOne({
-// 			where: {
-// 				spotId,
-// 			},
-// 		});
-
-// 		// If provided spotId is not found respond with 404 error
-// 		if (!findReviewsBySpotId) {
-// 			const err = new Error("Spot couldn't be found");
-// 			err.status = 404;
-// 			return next(err);
-// 		}
-
-// 		if (user) {
-// 			let safeUser = user.id;
-// 			// Post a new review related to the provided spotId
-
-// 			const spot = Number(spotId);
-
-// 			const createReviewBySpotId = await Booking.create({
-// 				review,
-// 				stars,
-// 				spotId: spot,
-// 				userId: safeUser,
-// 			});
-
-// 			res.status(201);
-// 			return res.json({
-// 				id: createReviewBySpotId.id,
-// 				userId: createReviewBySpotId.userId,
-// 				spotId: createReviewBySpotId.spotId,
-// 				review: createReviewBySpotId.review,
-// 				stars: createReviewBySpotId.stars,
-// 				createdAt: createReviewBySpotId.createdAt,
-// 				updatedAt: createReviewBySpotId.updatedAt,
-// 			});
-// 		}
-// 	}
-// );
+		return res.json({
+			id: createBookingBySpotId.id,
+			spotId: createBookingBySpotId.spotId,
+			userId: createBookingBySpotId.userId,
+			startDate: createBookingBySpotId.startDate,
+			endDate: createBookingBySpotId.endDate,
+			createdAt: createBookingBySpotId.createdAt,
+			updatedAt: createBookingBySpotId.updatedAt,
+		});
+	}
+);
 
 // Get all Bookings by a Spot's id
 router.get("/:spotId/bookings", requireAuth, async (req, res, next) => {
