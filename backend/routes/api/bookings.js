@@ -10,16 +10,135 @@ const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
 // Middleware to validate the input for a new Review
-const validate = [
-	check("review")
+const validateNewBooking = [
+	check("startDate")
 		.exists({ checkFalsy: true })
-		.withMessage("Review text is required"),
-	check("stars")
-		.exists({ checkFalsy: true })
-		.isInt({ min: 1, max: 5 })
-		.withMessage("Stars must be an integer from 1 to 5"),
+		.withMessage("Start date is required")
+		.custom(async (value, { req }) => {
+			const exitstingStartDate = await Booking.findOne({
+				where: {
+					spotId: req.params.spotId,
+					startDate: value,
+				},
+			});
+			if (exitstingStartDate) {
+				throw new Error(
+					"Start date conflicts with an existing booking"
+				);
+			}
+		}),
+	check("endDate").exists({ checkFalsy: true }).isDate(),
+	check("endDate").custom(async (value, { req }) => {
+		const startDate = new Date(req.body.startDate).getTime();
+		const endDate = new Date(value).getTime();
+		if (endDate <= startDate) {
+			throw new Error("end Date cannot be on or before start Date");
+		}
+		return value;
+	}),
 	handleValidationErrors,
 ];
+
+const validateEditBooking = [
+	check("startDate")
+		.exists({ checkFalsy: true })
+		.isDate()
+		.custom(async (value, { req }) => {
+			const startDate = new Date(value);
+			const endDate = new Date(req.body.endDate);
+
+			if (startDate >= endDate) {
+				throw new Error("endDate cannot come before startDate");
+			}
+		}),
+	check("endDate")
+		.exists({ checkFalsy: true })
+		.isDate()
+		.custom(async (value, { req }) => {
+			const endDate = new Date(value);
+			const currentDate = new Date();
+
+			if (currentDate > endDate) {
+				throw new Error("Past bookings can't be modified");
+			}
+		}),
+	handleValidationErrors,
+];
+
+//Edit a Booking
+router.put(
+	"/:bookingId",
+	[requireAuth, validateEditBooking],
+	async (req, res, next) => {
+		// If user is currently logged in, get userId of user
+		const { user } = req;
+		const { bookingId } = req.params;
+		const { startDate, endDate } = req.body;
+
+		// Get spot based on spotId
+		const getBookingById = await Booking.findByPk(bookingId);
+
+		// If provided spotId is not found respond with 404 error
+		if (!getBookingById) {
+			const err = new Error("Booking couldn't be found");
+			err.status = 404;
+			return next(err);
+		}
+
+		// Booking must belong to the current user
+		if (getBookingById.userId !== user.id) {
+			const err = new Error("Forbidden");
+			err.status = 403;
+			return next(err);
+		}
+
+		const queryStartDate = await Booking.findOne({
+			where: {
+				spotId: getBookingById.id,
+				startDate: startDate,
+			},
+		});
+
+		if (queryStartDate) {
+			const err = new Error(
+				"Start date conflicts with an existing booking"
+			);
+			err.status = 403;
+			return next(err);
+		}
+
+		const queryEndDate = await Booking.findOne({
+			where: {
+				endDate: endDate,
+			},
+		});
+
+		if (queryEndDate) {
+			const err = new Error(
+				"End date conflicts with an existing booking"
+			);
+			err.status = 403;
+			return next(err);
+		}
+
+		const updateBookingBySpotId = await getBookingById.update({
+			spotId: getBookingById.id,
+			userId: user.id,
+			startDate,
+			endDate,
+		});
+
+		return res.json({
+			id: updateBookingBySpotId.id,
+			spotId: updateBookingBySpotId.spotId,
+			userId: updateBookingBySpotId.userId,
+			startDate: updateBookingBySpotId.startDate,
+			endDate: updateBookingBySpotId.endDate,
+			createdAt: updateBookingBySpotId.createdAt,
+			updatedAt: updateBookingBySpotId.updatedAt,
+		});
+	}
+);
 
 //Delete an existing booking.
 router.delete("/:bookingId", requireAuth, async (req, res, next) => {
@@ -48,7 +167,7 @@ router.delete("/:bookingId", requireAuth, async (req, res, next) => {
 		return next(err);
 	}
 
-	// Booking must belong to the current user or the Spot must belong to the current user
+	// Booking must belong to the current user
 	if (findBookingById.Spot.ownerId !== userId) {
 		const err = new Error("Forbidden");
 		err.status = 403;
