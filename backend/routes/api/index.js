@@ -1,11 +1,13 @@
-const router = require('express').Router();
+const router = require("express").Router();
 
 // Route specific routers
-const sessionRouter = require('./session.js');
-const usersRouter = require('./users.js');
-const spotsRouter = require('./spots.js');
-const reviewRouter = require('./reviews.js');
-const bookingRouter = require('./bookings.js');
+const sessionRouter = require("./session.js");
+const usersRouter = require("./users.js");
+const spotsRouter = require("./spots.js");
+const reviewRouter = require("./reviews.js");
+const bookingRouter = require("./bookings.js");
+const spotImagesRouter = require("./spot-images.js");
+const reviewImagesRouter = require("./review-images.js");
 
 const { requireAuth, restoreUser } = require("../../utils/auth.js");
 
@@ -14,22 +16,26 @@ const { requireAuth, restoreUser } = require("../../utils/auth.js");
 // If current user session is not valid, set req.user to null
 router.use(restoreUser);
 
-router.get('/test', requireAuth, (req, res) => {
-  res.json({ message: 'success' });
+router.get("/test", requireAuth, (req, res) => {
+	res.json({ message: "success" });
 });
 
-router.use('/bookings', bookingRouter)
+router.use("/review-images", reviewImagesRouter);
 
-router.use('/session', sessionRouter);
+router.use("/spot-images", spotImagesRouter);
 
-router.use('/users', usersRouter);
+router.use("/bookings", bookingRouter);
 
-router.use('/spots', spotsRouter);
+router.use("/session", sessionRouter);
 
-router.use('/reviews', reviewRouter);
+router.use("/users", usersRouter);
 
-router.post('/test', (req, res) => {
-  res.json({ requestBody: req.body });
+router.use("/spots", spotsRouter);
+
+router.use("/reviews", reviewRouter);
+
+router.post("/test", (req, res) => {
+	res.json({ requestBody: req.body });
 });
 
 module.exports = router;

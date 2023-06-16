@@ -42,6 +42,7 @@ const validateNewBooking = [
 const validateEditBooking = [
 	check("startDate")
 		.exists({ checkFalsy: true })
+		.withMessage("Start date is required")
 		.isDate()
 		.custom(async (value, { req }) => {
 			const startDate = new Date(value);
@@ -53,6 +54,7 @@ const validateEditBooking = [
 		}),
 	check("endDate")
 		.exists({ checkFalsy: true })
+		.withMessage("End date is required")
 		.isDate()
 		.custom(async (value, { req }) => {
 			const endDate = new Date(value);
@@ -78,7 +80,7 @@ router.put(
 		// Get spot based on spotId
 		const getBookingById = await Booking.findByPk(bookingId);
 
-		// If provided spotId is not found respond with 404 error
+		//Couldn't find a Booking with the specified id
 		if (!getBookingById) {
 			const err = new Error("Booking couldn't be found");
 			err.status = 404;
@@ -92,13 +94,13 @@ router.put(
 			return next(err);
 		}
 
+		//Booking conflict
 		const queryStartDate = await Booking.findOne({
 			where: {
 				spotId: getBookingById.id,
 				startDate: startDate,
 			},
 		});
-
 		if (queryStartDate) {
 			const err = new Error(
 				"Start date conflicts with an existing booking"
@@ -106,13 +108,11 @@ router.put(
 			err.status = 403;
 			return next(err);
 		}
-
 		const queryEndDate = await Booking.findOne({
 			where: {
 				endDate: endDate,
 			},
 		});
-
 		if (queryEndDate) {
 			const err = new Error(
 				"End date conflicts with an existing booking"
@@ -128,6 +128,7 @@ router.put(
 			endDate,
 		});
 
+		// Successful Response
 		return res.json({
 			id: updateBookingBySpotId.id,
 			spotId: updateBookingBySpotId.spotId,
