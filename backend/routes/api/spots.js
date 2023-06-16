@@ -67,27 +67,25 @@ const validateNewBooking = [
 		.exists({ checkFalsy: true })
 		.withMessage("Start date is required")
 		.custom(async (value, { req }) => {
-			const exitstingStartDate = await Booking.findOne({
-				where: {
-					spotId: req.params.spotId,
-					startDate: value,
-				},
-			});
-			if (exitstingStartDate) {
-				throw new Error(
-					"Start date conflicts with an existing booking"
-				);
+			const startDate = new Date(value);
+			const endDate = new Date(req.body.endDate);
+
+			if (startDate >= endDate) {
+				throw new Error("endDate cannot come before startDate");
 			}
 		}),
-	check("endDate").exists({ checkFalsy: true }).isDate(),
-	check("endDate").custom(async (value, { req }) => {
-		let startDate = new Date(req.body.startDate).getTime();
-		let endDate = new Date(value).getTime();
-		if (endDate <= startDate) {
-			throw new Error("end Date cannot be on or before start Date");
-		}
-		return value;
-	}),
+	check("endDate")
+		.exists({ checkFalsy: true })
+		.withMessage("End date is required")
+		.isDate()
+		.custom(async (value, { req }) => {
+			const endDate = new Date(value);
+			const currentDate = new Date();
+
+			if (currentDate > endDate) {
+				throw new Error("Past bookings can't be modified");
+			}
+		}),
 	handleValidationErrors,
 ];
 
@@ -115,6 +113,34 @@ router.post(
 		if (getSpotById.ownerId === user.id) {
 			const err = new Error(
 				"Booking spot cannot belong to the current user"
+			);
+			err.status = 403;
+			return next(err);
+		}
+
+		//Booking conflict
+		const queryStartDate = await Booking.findOne({
+			where: {
+				spotId: getSpotById.id,
+				startDate: startDate,
+			},
+		});
+		if (queryStartDate) {
+			const err = new Error(
+				"Start date conflicts with an existing booking"
+			);
+			err.status = 403;
+			return next(err);
+		}
+		const queryEndDate = await Booking.findOne({
+			where: {
+				spotId: getSpotById.id,
+				endDate: endDate,
+			},
+		});
+		if (queryEndDate) {
+			const err = new Error(
+				"End date conflicts with an existing booking"
 			);
 			err.status = 403;
 			return next(err);
@@ -629,9 +655,66 @@ router.post("/", [requireAuth, validateNewSpot], async (req, res) => {
 	});
 });
 
+const validateQueryFilters = [
+	check("page")
+		.optional()
+		.isInt({ min: 1 })
+		.withMessage("Page must be greater than or equal to 1"),
+	check("size")
+		.optional()
+		.isInt({ min: 1 })
+		.withMessage("Page must be greater than or equal to 1"),
+	check("maxLat")
+		.optional()
+		.isInt()
+		.withMessage("Maximum latitude is invalid"),
+	check("minLat")
+		.optional()
+		.isInt()
+		.withMessage("Minimum latitude is invalid"),
+	check("minLng")
+		.optional()
+		.isInt()
+		.withMessage("Maximum longitude is invalid"),
+	check("maxLng")
+		.optional()
+		.isInt()
+		.withMessage("Maximum longitude is invalid"),
+	check("minPrice")
+		.optional()
+		.isInt({ min: 0 })
+		.withMessage("Minimum price must be greater than or equal to 0"),
+	check("maxPrice")
+		.optional()
+		.isInt({ min: 0 })
+		.withMessage("Maximum price must be greater than or equal to 0"),
+	handleValidationErrors,
+];
+
 // Get all Spots
-router.get("/", async (req, res) => {
-	const getAllSpots = await Spot.findAll();
+router.get("/", validateQueryFilters, async (req, res, next) => {
+	// Add Query Filters to Get All Spots
+	const { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } =
+		req.query;
+
+	let offset;
+	if (page >= 1 && page <= 10) {
+		offset = size * (page - 1);
+	} else {
+		offset = 0;
+	}
+
+	let limit;
+	if (size >= 1 && size <= 20) {
+		limit = size;
+	} else {
+		limit = 20;
+	}
+
+	const getAllSpots = await Spot.findAll({
+		limit,
+		offset,
+	});
 
 	// Create payload array to contain all spot objects
 	const payload = [];
@@ -682,6 +765,8 @@ router.get("/", async (req, res) => {
 
 	return res.json({
 		Spots: payload,
+		page: offset,
+		size: limit,
 	});
 });
 
