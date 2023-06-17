@@ -66,24 +66,17 @@ const validateNewBooking = [
 	check("startDate")
 		.exists({ checkFalsy: true })
 		.withMessage("Start date is required")
-		.custom(async (value, { req }) => {
-			const startDate = new Date(value);
-			const endDate = new Date(req.body.endDate);
-
-			if (startDate >= endDate) {
-				throw new Error("endDate cannot come before startDate");
-			}
-		}),
+		.isDate(),
 	check("endDate")
 		.exists({ checkFalsy: true })
 		.withMessage("End date is required")
 		.isDate()
 		.custom(async (value, { req }) => {
+			const startDate = new Date(req.body.startDate);
 			const endDate = new Date(value);
-			const currentDate = new Date();
 
-			if (currentDate > endDate) {
-				throw new Error("Past bookings can't be modified");
+			if (startDate >= endDate) {
+				throw new Error("endDate cannot come before startDate");
 			}
 		}),
 	handleValidationErrors,
@@ -118,6 +111,16 @@ router.post(
 			return next(err);
 		}
 
+		// Error response: Can't edit a booking that's past the end date
+		const endBookingDate = new Date(endDate);
+		const currentDate = new Date();
+
+		if (currentDate > endBookingDate) {
+			const err = new Error("Past bookings can't be modified");
+			err.status = 403;
+			return next(err);
+		}
+
 		//Booking conflict
 		const queryStartDate = await Booking.findOne({
 			where: {
@@ -127,8 +130,11 @@ router.post(
 		});
 		if (queryStartDate) {
 			const err = new Error(
-				"Start date conflicts with an existing booking"
+				"Sorry, this spot is already booked for the specified dates"
 			);
+			err.errors = {
+				startDate: "Start date conflicts with an existing booking",
+			};
 			err.status = 403;
 			return next(err);
 		}
@@ -140,8 +146,11 @@ router.post(
 		});
 		if (queryEndDate) {
 			const err = new Error(
-				"End date conflicts with an existing booking"
+				"Sorry, this spot is already booked for the specified dates"
 			);
+			err.errors = {
+				endDate: "End date conflicts with an existing booking",
+			};
 			err.status = 403;
 			return next(err);
 		}
