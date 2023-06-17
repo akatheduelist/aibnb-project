@@ -169,11 +169,14 @@ router.delete("/:bookingId", requireAuth, async (req, res, next) => {
 	}
 
 	// Booking must belong to the current user
-	if (findBookingById.Spot.ownerId !== userId) {
-		const err = new Error("Forbidden");
-		err.status = 403;
-		return next(err);
-	}
+	// if (
+	// 	findBookingById.userId !== userId ||
+	// 	findBookingById.Spot.ownerId !== userId
+	// ) {
+	// 	const err = new Error("Forbidden");
+	// 	err.status = 403;
+	// 	return next(err);
+	// }
 
 	const currentDate = new Date();
 	const bookingStartDate = new Date(findBookingById.startDate);
@@ -185,13 +188,14 @@ router.delete("/:bookingId", requireAuth, async (req, res, next) => {
 		return next(err);
 	}
 
+	console.log(findBookingById);
 	// Delete booking coorisponding to provided bookingId
 	if (
 		findBookingById.Spot.ownerId === userId ||
 		findBookingById.userId === userId
 	) {
 		await findBookingById.destroy();
-	} else if (findBookingById.userId !== userId) {
+	} else {
 		const err = new Error("Forbidden");
 		err.status = 403;
 		return next(err);
