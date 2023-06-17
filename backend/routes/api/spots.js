@@ -702,7 +702,7 @@ const validateQueryFilters = [
 // Get all Spots
 router.get("/", validateQueryFilters, async (req, res, next) => {
 	// Add Query Filters to Get All Spots
-	const { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } =
+	let { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } =
 		req.query;
 
 	let offset;
@@ -710,6 +710,7 @@ router.get("/", validateQueryFilters, async (req, res, next) => {
 		offset = size * (page - 1);
 	} else {
 		offset = 0;
+		page = 1;
 	}
 
 	let limit;
@@ -717,6 +718,7 @@ router.get("/", validateQueryFilters, async (req, res, next) => {
 		limit = size;
 	} else {
 		limit = 20;
+		size = 20;
 	}
 
 	const getAllSpots = await Spot.findAll({
@@ -773,8 +775,8 @@ router.get("/", validateQueryFilters, async (req, res, next) => {
 
 	return res.json({
 		Spots: payload,
-		page: offset,
-		size: limit,
+		page,
+		size,
 	});
 });
 
