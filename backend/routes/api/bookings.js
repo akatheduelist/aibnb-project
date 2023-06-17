@@ -178,17 +178,17 @@ router.delete("/:bookingId", requireAuth, async (req, res, next) => {
 	// 	return next(err);
 	// }
 
+	// Error response: Bookings that have been started can't be deleted
 	const currentDate = new Date();
 	const bookingStartDate = new Date(findBookingById.startDate);
 	if (currentDate > bookingStartDate) {
 		const err = new Error(
 			"Bookings that have been started can't be deleted"
 		);
-		err.status = 404;
+		err.status = 403;
 		return next(err);
 	}
 
-	console.log(findBookingById);
 	// Delete booking coorisponding to provided bookingId
 	if (
 		findBookingById.Spot.ownerId === userId ||
