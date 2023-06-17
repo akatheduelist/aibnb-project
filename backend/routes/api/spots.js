@@ -104,9 +104,7 @@ router.post(
 
 		// Spot must NOT belong to the current user
 		if (getSpotById.ownerId === user.id) {
-			const err = new Error(
-				"Booking spot cannot belong to the current user"
-			);
+			const err = new Error("Forbidden");
 			err.status = 403;
 			return next(err);
 		}
