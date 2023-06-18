@@ -87,7 +87,7 @@ router.put(
 		}
 
 		// Error response: Can't edit a booking that's past the end date
-		const endBookingDate = new Date(endDate);
+		const endBookingDate = new Date(getBookingById.endDate);
 		const currentDate = new Date();
 
 		if (currentDate > endBookingDate) {
@@ -99,7 +99,6 @@ router.put(
 		//Booking conflict
 		const queryStartDate = await Booking.findOne({
 			where: {
-				spotId: getBookingById.id,
 				startDate: startDate,
 			},
 		});
