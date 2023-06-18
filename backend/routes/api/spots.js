@@ -38,8 +38,10 @@ const validateNewSpot = [
 		.isDecimal({ force_decimal: true })
 		.withMessage("Longitude is not valid"),
 	check("name")
-		.exists({ checkFalsy: true })
 		.isLength({ max: 50 })
+		.withMessage("Name must be less than 50 characters"),
+	check("name")
+		.exists({ checkFalsy: true })
 		.withMessage("Name must be less than 50 characters"),
 	check("description")
 		.exists({ checkFalsy: true })
@@ -76,7 +78,7 @@ const validateNewBooking = [
 			const endDate = new Date(value);
 
 			if (startDate >= endDate) {
-				throw new Error("endDate cannot come before startDate");
+				throw new Error("endDate cannot be on or before startDate");
 			}
 		}),
 	handleValidationErrors,
@@ -110,14 +112,14 @@ router.post(
 		}
 
 		// Error response: Can't edit a booking that's past the end date
-		const endBookingDate = new Date(endDate);
-		const currentDate = new Date();
+		// const endBookingDate = new Date(endDate);
+		// const currentDate = new Date();
 
-		if (currentDate > endBookingDate) {
-			const err = new Error("Past bookings can't be modified");
-			err.status = 403;
-			return next(err);
-		}
+		// if (currentDate > endBookingDate) {
+		// 	const err = new Error("Past bookings can't be modified");
+		// 	err.status = 403;
+		// 	return next(err);
+		// }
 
 		//Booking conflict
 		const queryStartDate = await Booking.findOne({
@@ -196,8 +198,11 @@ router.get("/:spotId/bookings", requireAuth, async (req, res, next) => {
 	if (findSpotById.ownerId === user.id) {
 		const payload = [];
 
-		const bookingUser = await User.findByPk(user.id);
-		console.log(bookingUser);
+		const bookingUser = await User.findByPk(user.id, {
+			attributes: {
+				exclude: ["username"],
+			},
+		});
 
 		findBookingsBySpotId.forEach((element) => {
 			let booking = element.toJSON();
@@ -233,7 +238,7 @@ router.post(
 		const { review, stars } = req.body;
 
 		// Get all spots owned by the current user
-		const getOwnerBookings = await Review.findOne({
+		const getOwnerReviews = await Review.findOne({
 			where: {
 				userId: user.id,
 				spotId,
@@ -272,8 +277,7 @@ router.post(
 				userId: safeUser,
 			});
 
-			res.status(201);
-			return res.json({
+			return res.status(201).json({
 				id: createReviewBySpotId.id,
 				userId: createReviewBySpotId.userId,
 				spotId: createReviewBySpotId.spotId,
@@ -597,12 +601,15 @@ router.get("/:spotId", async (req, res, next) => {
 	return res.json({
 		id: findSpotById.id,
 		ownerId: findSpotById.ownerId,
-		city: findSpotById.state,
+		address: findSpotById.address,
+		city: findSpotById.city,
+		state: findSpotById.state,
 		country: findSpotById.country,
 		lat: findSpotById.lat,
 		lng: findSpotById.lng,
 		name: findSpotById.name,
 		descriptions: findSpotById.description,
+		price: findSpotById.price,
 		createdAt: findSpotById.createdAt,
 		updatedAt: findSpotById.updatedAt,
 		numReviews: numOfReviews,
@@ -648,7 +655,9 @@ router.post("/", [requireAuth, validateNewSpot], async (req, res) => {
 	});
 
 	// Respond with values of created spot
-	return res.json({
+	return res.status(201).json({
+		id: newSpot.id,
+		ownerId: newSpot.ownerId,
 		address: newSpot.address,
 		city: newSpot.city,
 		state: newSpot.state,
@@ -671,7 +680,7 @@ const validateQueryFilters = [
 	check("size")
 		.optional()
 		.isInt({ min: 1 })
-		.withMessage("Page must be greater than or equal to 1"),
+		.withMessage("Size must be greater than or equal to 1"),
 	check("maxLat")
 		.optional()
 		.isInt()

@@ -21,13 +21,15 @@ const validateSignup = [
 		.isAlpha()
 		.withMessage("Last Name is required"),
 	check("username")
-		.exists({ checkFalsy: true })
 		.isLength({ min: 4 })
 		.withMessage("Please provide a username with at least 4 characters."),
 	check("username")
 		.not()
 		.isEmail()
 		.withMessage("Username cannot be an email."),
+	check("username")
+		.exists({ checkFalsy: true })
+		.withMessage("Username is required"),
 	check("password")
 		.exists({ checkFalsy: true })
 		.isLength({ min: 6 })
@@ -35,7 +37,7 @@ const validateSignup = [
 	handleValidationErrors,
 ];
 
-// Sign up
+// Sign Up a User
 router.post("/", validateSignup, async (req, res, next) => {
 	const { firstName, lastName, email, password, username } = req.body;
 	const hashedPassword = bcrypt.hashSync(password);
@@ -64,7 +66,7 @@ router.post("/", validateSignup, async (req, res, next) => {
 	if (queryUsername) {
 		const err = new Error("User already exists");
 		(err.errors = {
-			email: "User with that username already exists",
+			username: "User with that username already exists",
 		}),
 			(err.status = 500);
 		return next(err);
