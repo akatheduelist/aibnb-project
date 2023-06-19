@@ -68,10 +68,15 @@ router.put(
 		const { user } = req;
 		const { bookingId } = req.params;
 		const { startDate, endDate } = req.body;
-
+		console.log(bookingId)
 		// Get spot based on spotId
-		const getBookingById = await Booking.findByPk(bookingId);
+		const getBookingById= await Booking.findOne({
+			where: {
+				id: bookingId
+			}
+		})
 
+		console.log(getBookingById)
 		//Couldn't find a Booking with the specified id
 		if (!getBookingById) {
 			const err = new Error("Booking couldn't be found");
@@ -127,9 +132,8 @@ router.put(
 			err.status = 403;
 			return next(err);
 		}
-
 		const updateBookingBySpotId = await getBookingById.update({
-			spotId: getBookingById.id,
+			spotId: getBookingById.spotId,
 			userId: user.id,
 			startDate,
 			endDate,
