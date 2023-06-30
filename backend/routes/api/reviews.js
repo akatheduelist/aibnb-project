@@ -85,7 +85,7 @@ router.put('/:reviewId', [ requireAuth, validateNewReview ], async (req, res, ne
     // Get the review related to the provided reviewId
     const { reviewId } = req.params;
     const findReviewById = await Review.findByPk(reviewId);
-    console.log(findReviewById)
+
     // If provided reviewId is not found respond with 404 error
     if (!findReviewById) {
         const err = new Error("Review couldn't be found");
