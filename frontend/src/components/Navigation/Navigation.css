@@ -1,3 +1,36 @@
 .hidden {
     display: none;
 }
+
+.navigation {
+    color: #666666;
+}
+
+.navigation-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1em 2em;
+    border-bottom: 1px solid #dddddd;
+}
+
+.logo {
+    height: 43px;
+}
+
+.user-button{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 6.6em;
+    height: 3.4em;
+    padding: 0em .8em;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 30px;
+
+}
+
+.user-button:hover {
+    box-shadow: 1px 3px 6px #dddddd;
+}

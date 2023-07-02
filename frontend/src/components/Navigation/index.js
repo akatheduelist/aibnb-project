@@ -3,21 +3,21 @@ import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import './Navigation.css';
+import logo from '../../images/logo.png'
 
 function Navigation({ isLoaded }) {
     const sessionUser = useSelector(state => state.session.user);
 
     return (
-        <ul>
-            <li>
-                <NavLink exact to="/">Home</NavLink>
-            </li>
-            {isLoaded && (
-                <li>
-                    <ProfileButton user={sessionUser} />
-                </li>
-            )}
-        </ul>
+
+        <div className="navigation navigation-container">
+            <NavLink exact to="/"><img className='navigation logo' src={logo} alt={'AirDnB Logo'} /></NavLink>
+                {isLoaded && (
+                    <div>
+                        <ProfileButton user={sessionUser} />
+                    </div>
+                )}
+        </div>
     );
 }
 
