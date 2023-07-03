@@ -1,23 +1,46 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux'
+import { createSpot } from '../../store/spot';
 import './CreateSpot.css';
 
 export default function CreateSpot() {
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const [country, setCountry] = useState('');
     const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
     const [description, setDescription] = useState('');
     const [title, setTitle] = useState('');
-    const [price, setPrice] = useState('');
+    const [price, setPrice] = useState(0);
+    const [errors, setErrors] = useState({});
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log("NewSpot => HandleSubmit => HIT!")
 
-        return 
+        dispatch(
+            createSpot({
+                country,
+                address,
+                city,
+                state,
+                description,
+                title,
+                price
+            })
+        );
+        // reset();
     };
 
+    const reset = () => {
+        setCountry('');
+        setAddress('');
+        setCity('');
+        setState('');
+        setDescription('');
+        setTitle('');
+        setPrice(0);
+    }
     return (
         <div className="create-spot create-spot-container">
             <div className="create-spot header">
@@ -105,7 +128,7 @@ export default function CreateSpot() {
                     <hr />
 
                     {/* Spot Photos */}
-                    <h4>Liven up your spot with photos</h4>
+                    {/* <h4>Liven up your spot with photos</h4>
                     <p>Submit a link to at least one photo to publish your spot.</p>
                     <input
                         type='text'
@@ -141,7 +164,7 @@ export default function CreateSpot() {
                         name='title'
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                    />
+                    /> */}
 
                     <hr />
 
