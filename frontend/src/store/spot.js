@@ -4,7 +4,10 @@ const SET_SPOT = 'spot/setSpot';
 const REMOVE_SPOT = 'spot/removeSpot';
 const GET_SPOT = 'spot/getSpot';
 
+const state = getState();
+
 const setSpot = (spot) => {
+    console.log("Dispatch to setSpot => SENT!")
     return {
         type: SET_SPOT,
         payload: spot
@@ -43,6 +46,7 @@ export const createSpot = ({country, address, city, state, description, title, p
     })
     const data = await response.json();
     console.log("Database Respsonse => ", data)
+    dispatch(setSpot(data))
     // return response;
 };
 
@@ -56,9 +60,18 @@ export const readSpot = () => async (dispatch) => {
     // return response;
 };
 
-const initialState = { spot: null };
+const initialState = { singleSpot: null };
 
 export default function spotReducer(state = initialState, action) {
     let newState;
+    switch(action.type){
+        case SET_SPOT:
+            newState= Object.assign({}, state);
+            newState.singleSpot = action.payload;
+            console.log("spotReducer newState => ", newState)
+            return newState;
+        default:
+            return state;
+    }
 
 }
