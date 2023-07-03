@@ -4,7 +4,6 @@ const SET_SPOT = 'spot/setSpot';
 const REMOVE_SPOT = 'spot/removeSpot';
 const GET_SPOT = 'spot/getSpot';
 
-const state = getState();
 
 const setSpot = (spot) => {
     console.log("Dispatch to setSpot => SENT!")
@@ -66,6 +65,7 @@ export default function spotReducer(state = initialState, action) {
     let newState;
     switch(action.type){
         case SET_SPOT:
+            console.log("setSpot currentState => ")
             newState= Object.assign({}, state);
             newState.singleSpot = action.payload;
             console.log("spotReducer newState => ", newState)
