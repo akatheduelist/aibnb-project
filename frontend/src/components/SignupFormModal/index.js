@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
@@ -15,10 +15,27 @@ function SignupFormModal() {
     const [errors, setErrors] = useState({});
     const { closeModal } = useModal();
 
+    useEffect(() => {
+        const error = {};
+
+        if (!email.length ||
+            !username.length ||
+            !firstName.length ||
+            !lastName.length ||
+            !password.length ||
+            !confirmPassword.length) error.length = "Signup fields cannot be empty.";
+        if (username.length > 1 && username.length < 4) error.username = "Username field must be more than 4 characters."
+
+        console.log("Sign Up useEffect Errors => ", error)
+
+        setErrors(error)
+    }, [email, username, firstName, lastName, password, confirmPassword]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (password === confirmPassword) {
             setErrors({});
+
             return dispatch(
                 sessionActions.signup({
                     email,
@@ -46,26 +63,6 @@ function SignupFormModal() {
             <h1>Sign Up</h1>
             <form onSubmit={handleSubmit}>
                 <label>
-                    Email
-                    <input
-                        type="text"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </label>
-                {errors.email && <p>{errors.email}</p>}
-                <label>
-                    Username
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </label>
-                {errors.username && <p>{errors.username}</p>}
-                <label>
                     First Name
                     <input
                         type="text"
@@ -85,6 +82,26 @@ function SignupFormModal() {
                     />
                 </label>
                 {errors.lastName && <p>{errors.lastName}</p>}
+                <label>
+                    Email
+                    <input
+                        type="text"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </label>
+                {errors.email && <p>{errors.email}</p>}
+                <label>
+                    Username
+                    <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                </label>
+                {errors.username && <p>{errors.username}</p>}
                 <label>
                     Password
                     <input
@@ -107,7 +124,8 @@ function SignupFormModal() {
                 {errors.confirmPassword && (
                     <p>{errors.confirmPassword}</p>
                 )}
-                <button type="submit">Sign Up</button>
+                {console.log("Sign Up Errors => ", errors)}
+                <button type="submit" disabled={errors.length || errors.username}>Sign Up</button>
             </form>
         </>
     );

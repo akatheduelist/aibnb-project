@@ -14,8 +14,8 @@ function LoginFormModal() {
     useEffect(() => {
         const error = {};
 
-        if (credential.length < 4) error.credential = "Username must be longer than 4 characters.";
-        if (password.length < 6) error.password = "Password must be at least 6 characters.";
+        if (credential.length > 1 && credential.length < 4) error.credential = "Username must be longer than 4 characters.";
+        if (password.length > 1 && password.length < 6) error.password = "Password must be at least 6 characters.";
 
         setErrors(error);
     }, [credential, password]);
@@ -30,46 +30,50 @@ function LoginFormModal() {
             .catch(async (res) => {
                 const data = await res.json();
                 if (data && data.message) {
-                    error.failure = "The provided credentials were invalid."
-                    setErrors(error)
+                    error.failure = "The provided credentials were invalid.";
+                    setErrors(error);
                 }
             });
     };
 
     return (
-        <>
-            <h1>Log In</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Username or Email
-                    <input
-                        type="text"
-                        value={credential}
-                        onChange={(e) => setCredential(e.target.value)}
-                        required
-                    />
-                </label>
-                {errors.password && (
-                    <p>{errors.password}</p>
-                )}
-                <label>
-                    Password
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </label>
-                {errors.credential && (
-                    <p>{errors.credential}</p>
-                )}
-                <button type="submit" disabled={Object.keys(errors).length > 0}>Log In</button>
-                {errors.failure && (
-                    <p>{errors.failure}</p>
-                )}
-            </form>
-        </>
+        <div className="login-form">
+                <h1>Log In</h1>
+                <form className="form-modal" onSubmit={handleSubmit}>
+                    <label>
+                        <input
+                            type="text"
+                            placeholder="Username or Email"
+                            value={credential}
+                            onChange={(e) => setCredential(e.target.value)}
+                            required
+                        />
+                    </label>
+                    {errors.password && (
+                        <p>{errors.password}</p>
+                    )}
+                    <label>
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </label>
+                    {errors.credential && (
+                        <p>{errors.credential}</p>
+                    )}
+                    <button type="submit" disabled={Object.keys(errors).length > 0}>Log In</button>
+                    {errors.failure && (
+                        <p>{errors.failure}</p>
+                    )}
+                    <button type="submit" onClick={() => {
+                        setCredential("Demo-lition");
+                        setPassword("password");
+                    }}>Log in as Demo User</button>
+                </form >
+            </div>
     );
 }
 
