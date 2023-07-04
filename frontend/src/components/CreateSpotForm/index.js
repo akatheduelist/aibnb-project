@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom'
 import { createSpot } from '../../store/spot';
 import './CreateSpot.css';
 
+
+
 export default function CreateSpot() {
     const dispatch = useDispatch();
+    const history = useHistory();
     const [country, setCountry] = useState('');
     const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
@@ -15,14 +19,6 @@ export default function CreateSpot() {
     const [imageUrl, setImageUrl] = useState('');
     const [previewImageUrl, setPreviewImageUrl] = useState('');
     const [errors, setErrors] = useState({});
-
-    // useEffect(() => {
-    //     const error = {};
-
-
-
-    //     console.log("Create new spot ERRORS => ", error)
-    // }, [country, address, city, state, description, title, price]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -37,11 +33,13 @@ export default function CreateSpot() {
         if (!description || description.length < 30) error.description = "Description needs 30 or more characters";
         if (!title) error.title = "Name is required";
         if (!price) error.price = "Price is required";
-        if (!previewImageUrl) error.previewImageUrl = "Preview image is required"
+        if (!previewImageUrl) error.previewImageUrl = "Preview image is required";
 
+        // const validImgFormats = [".jpg", ".png", ".jpeg"]
+        // if (!imageUrl.slice(-4).toLowerCase().some(slice => image) || !imageUrl.slice(-4).toLowerCase().includes(".jpg")) error.imageUrl = "Image URL must end in .png, .jpg, or .jpeg";
 
         console.log("Create new spot ERRORS => ", error);
-        setErrors(error)
+        setErrors(error);
 
         if (!Object.keys(error).length) {
             dispatch(
@@ -54,10 +52,10 @@ export default function CreateSpot() {
                     title,
                     price
                 })
-            );
-        }
-        // reset();
-    };
+                )
+            }
+            reset();
+        };
 
     const reset = () => {
         setCountry('');
@@ -67,6 +65,8 @@ export default function CreateSpot() {
         setDescription('');
         setTitle('');
         setPrice(0);
+        setPreviewImageUrl('');
+        setImageUrl('');
     };
     return (
         <div className="create-spot create-spot-container">
@@ -175,38 +175,46 @@ export default function CreateSpot() {
                         placeholder='Preview image URL'
                         name='previewImageUrl'
                         value={previewImageUrl}
-                        onChange={(e) => setTitle(e.target.value)}
+                        onChange={(e) => setPreviewImageUrl(e.target.value)}
 
                     />
-                    <div><span className="validation-errors">{errors.previewImageUrl}</span></div>
+                    <div><span className="validation-errors">{errors.previewImageUrl || errors.imageUrl}</span></div>
+
                     <input
                         type='url'
                         placeholder='Image URL'
                         name='imageUrl'
                         value={imageUrl}
-                        onChange={(e) => setTitle(e.target.value)}
+                        onChange={(e) => setImageUrl(e.target.value)}
                     />
+                    <div><span className="validation-errors">{errors.imageUrl}</span></div>
+
+                    {/* <input
+                        type='url'
+                        placeholder='Image URL'
+                        name='imageUrl'
+                        value={imageUrl}
+                        onChange={(e) => setImageUrl(e.target.value)}
+                    />
+                    <div><span className="validation-errors">{errors.imageUrl}</span></div>
+
                     <input
                         type='url'
                         placeholder='Image URL'
                         name='imageUrl'
                         value={imageUrl}
-                        onChange={(e) => setTitle(e.target.value)}
+                        onChange={(e) => setImageUrl(e.target.value)}
                     />
+                    <div><span className="validation-errors">{errors.imageUrl}</span></div>
+
                     <input
                         type='url'
                         placeholder='Image URL'
                         name='imageUrl'
                         value={imageUrl}
-                        onChange={(e) => setTitle(e.target.value)}
+                        onChange={(e) => setImageUrl(e.target.value)}
                     />
-                    <input
-                        type='url'
-                        placeholder='Image URL'
-                        name='imageUrl'
-                        value={imageUrl}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
+                    <div><span className="validation-errors">{errors.imageUrl}</span></div> */}
 
                     <hr />
 

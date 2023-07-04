@@ -41,10 +41,9 @@ export const getAllSpots = () => async (dispatch) => {
 };
 
 export const createSpot = ({country, address, city, state, description, title, price }) => async (dispatch) => {
-    // console.log("createSpot => HIT!")
-    // console.log("createSpot Variables => ", country, address, city, state, description, title, price);
+    console.log("createSpot THUNK => HIT!")
 
-    const response = await csrfFetch("/api/spots", {
+    const res = await csrfFetch("/api/spots", {
         method: "POST",
         body: JSON.stringify({
             country,
@@ -58,10 +57,10 @@ export const createSpot = ({country, address, city, state, description, title, p
             price
         })
     })
-    const data = await response.json();
-    // console.log("Database Respsonse => ", data)
+    const data = await res.json();
+    console.log("createSpot THUNK => Database Respsonse => ", data)
     dispatch(setSpot(data))
-    // return response;
+    return console.log("THUNK RETURN", res);
 };
 
 export const deleteSpot = () => async (dispatch) => {
@@ -81,12 +80,12 @@ export default function spotReducer(state = initialState, action) {
             console.log("GET_ALL_SPOTS REDUCER HIT! =>", newState)
             return newState;
         }
-        // case SET_SPOT:
-        //     console.log("setSpot currentState => ")
-        //     newState= Object.assign({}, state);
-        //     newState.singleSpot = action.payload;
-        //     console.log("spotReducer newState => ", newState)
-        //     return newState;
+        case SET_SPOT:
+            const newState= {...state, singleSpot: {}}
+            console.log("SET_SPOT REDUCER => HIT!")
+            newState.singleSpot = action.payload;
+            console.log("SET_SPOT REDUCER => newState => ", newState)
+            return newState;
         default:
             return state;
     }
