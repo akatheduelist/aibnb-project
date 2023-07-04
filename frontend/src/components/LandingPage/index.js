@@ -1,19 +1,26 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { getAllSpots } from '../../store/spot';
 import './LandingPage.css';
-import testSpot from '../../images/testspot.jpg';
-
-const testArr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 export default function LandingPage(store) {
-    // console.log("LandingPage Store Content => ", store.getState);
+    const dispatch = useDispatch();
+    const allSpots = useSelector((state) => Object.values(state.spots));
+
+    console.log("Landing Page ALL SPOTS => ", allSpots);
+    useEffect(() => {
+        dispatch(getAllSpots());
+    }, [dispatch]);
+
     return (
-                <div className="landing-page landing-page-container">
-                    <div className="landing-page spot-card">
-                        <img className="landing-page spot-card-img" src={testSpot} />
-                        <div className="landing-page spot-card-details">
-                            <div className="spot-details"><span>City, State</span><span>STAR</span></div>
-                            <div className="spot-details"><span>PRICE night</span></div>
-                        </div>
-                    </div>
-                </div>
+        <>
+            {allSpots.map(({ name, city, state, avgRating, price }) =>
+                <>
+                    <h1>{name}</h1>
+
+                    <div></div>
+                </>
+            )}
+        </>
     );
 }
