@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { getAllSpots } from '../../store/spot';
+import testImg from '../../images/testspot.jpg';
 import './LandingPage.css';
 
 export default function LandingPage(store) {
@@ -14,13 +15,23 @@ export default function LandingPage(store) {
 
     return (
         <>
-            {allSpots.map(({ name, city, state, avgRating, price }) =>
-                <>
-                    <h1>{name}</h1>
-
-                    <div></div>
-                </>
-            )}
+            <div className="landing-page landing-page-container">
+                {allSpots.map(({ name, city, state, avgRating, price }) =>
+                    <>
+                        <div className="landing-page card-container">
+                            <div>
+                                <img className="card-img" src={testImg} />
+                            </div>
+                            <div className="card-details">
+                                <span>{`${city}, ${state}`}</span><span className="avg-rating">{`${avgRating}`}</span>
+                            </div>
+                            <div className="card-price">
+                                <span>{`$${price} night`}</span>
+                            </div>
+                        </div>
+                    </>
+                )}
+            </div>
         </>
     );
 }
