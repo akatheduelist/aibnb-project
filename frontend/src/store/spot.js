@@ -3,8 +3,9 @@ import { csrfFetch } from "./csrf";
 const SET_SPOT = 'spot/setSpot';
 const REMOVE_SPOT = 'spot/removeSpot';
 const GET_ALL_SPOTS = 'spot/getAllSpots';
+const GET_SPOT_BY_ID = 'spot/getSpotById'
 
-
+// ACTIONS
 const setSpot = (spot) => {
     console.log("Dispatch to setSpot => SENT!")
     return {
@@ -19,6 +20,14 @@ const removeSpot = () => {
     };
 };
 
+const readSpotById = (spot) => {
+    console.log("READ SPOT BY ID => ACTION => HIT!")
+    return {
+        type: GET_SPOT_BY_ID,
+        spot
+    }
+}
+
 const loadSpots = (spots) => {
     console.log("ACTION GET_ALL_SPOTS => SENT!")
     return {
@@ -27,18 +36,31 @@ const loadSpots = (spots) => {
     };
 };
 
+// ACTION THUNK MIDDLEWARE
 export const getAllSpots = () => async (dispatch) => {
     const res = await fetch("/api/spots")
-    console.log("FETCH")
+    console.log("GET ALL SPOTS => FETCH")
 
     if (res.ok){
         console.log("RESPONSE OK")
         const data = await res.json();
         console.log("RESPONSE DATA", data.Spots)
         dispatch(loadSpots(data.Spots))
-        // return data;
+        return data.Spots;
     }
 };
+
+export const getSpotById = (spotId) => async (dispatch) => {
+    const res = await csrfFetch(`/api/spots/${spotId}`)
+    console.log("GET SPOT BY ID => THUNK FETCH => ", res.status)
+
+    if (res.ok){
+        const data = await res.json();
+        console.log("GET SPOT BY ID => THUNK RES => ", data)
+        dispatch(readSpotById(data))
+        return data;
+    }
+}
 
 export const createSpot = ({country, address, city, state, description, title, price }) => async (dispatch) => {
     console.log("createSpot THUNK => HIT!")
@@ -68,6 +90,7 @@ export const deleteSpot = () => async (dispatch) => {
     // return response;
 };
 
+// REDUCER
 const initialState = {};
 
 export default function spotReducer(state = initialState, action) {
@@ -79,6 +102,12 @@ export default function spotReducer(state = initialState, action) {
             });
             console.log("GET_ALL_SPOTS REDUCER HIT! =>", newState)
             return newState;
+        }
+        case GET_SPOT_BY_ID: {
+            const newState = {...state, singleSpot: {}}
+            newState.singleSpot = action.spot
+            console.log("GET_SPOT_BY_ID => REDUCER => ", newState)
+            return newState
         }
         case SET_SPOT:
             const newState= {...state, singleSpot: {}}
