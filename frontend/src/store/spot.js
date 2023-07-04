@@ -76,11 +76,12 @@ export const deleteSpot = () => async (dispatch) => {
 const initialState = {};
 
 export default function spotReducer(state = initialState, action) {
+    const newState = {};
     switch(action.type){
         case GET_ALL_SPOTS:{
-            const newState = {};
+            newState.allSpots = {}
             action.spots.forEach(spot => {
-                newState[spot.id] = spot
+                newState.allSpots[spot.id] = spot
             });
             console.log("getSpot Reducer HIT! =>", newState)
             return newState;
