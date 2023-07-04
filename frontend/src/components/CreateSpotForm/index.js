@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux'
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { createSpot } from '../../store/spot';
 import './CreateSpot.css';
 
@@ -12,23 +12,50 @@ export default function CreateSpot() {
     const [description, setDescription] = useState('');
     const [title, setTitle] = useState('');
     const [price, setPrice] = useState(0);
+    const [imageUrl, setImageUrl] = useState('');
+    const [previewImageUrl, setPreviewImageUrl] = useState('');
     const [errors, setErrors] = useState({});
+
+    // useEffect(() => {
+    //     const error = {};
+
+
+
+    //     console.log("Create new spot ERRORS => ", error)
+    // }, [country, address, city, state, description, title, price]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("NewSpot => HandleSubmit => HIT!")
+        console.log("NewSpot => HandleSubmit => HIT!");
 
-        dispatch(
-            createSpot({
-                country,
-                address,
-                city,
-                state,
-                description,
-                title,
-                price
-            })
-        );
+        const error = {};
+
+        if (!country) error.country = "Country is required";
+        if (!address) error.address = "Address is required";
+        if (!city) error.city = "City is required";
+        if (!state) error.state = "State is required";
+        if (!description || description.length < 30) error.description = "Description needs 30 or more characters";
+        if (!title) error.title = "Name is required";
+        if (!price) error.price = "Price is required";
+        if (!previewImageUrl) error.previewImageUrl = "Preview image is required"
+
+
+        console.log("Create new spot ERRORS => ", error);
+        setErrors(error)
+
+        if (!Object.keys(error).length) {
+            dispatch(
+                createSpot({
+                    country,
+                    address,
+                    city,
+                    state,
+                    description,
+                    title,
+                    price
+                })
+            );
+        }
         // reset();
     };
 
@@ -40,7 +67,7 @@ export default function CreateSpot() {
         setDescription('');
         setTitle('');
         setPrice(0);
-    }
+    };
     return (
         <div className="create-spot create-spot-container">
             <div className="create-spot header">
@@ -51,6 +78,7 @@ export default function CreateSpot() {
             <div className="create-spot form">
                 <form onSubmit={handleSubmit}>
                     {/* Country */}
+                    <label>Country <span className="validation-errors">{errors.country}</span></label>
                     <input
                         type='text'
                         placeholder='Country'
@@ -60,30 +88,36 @@ export default function CreateSpot() {
                     />
 
                     {/* Street Address */}
+                    <label>Address <span className="validation-errors">{errors.address}</span></label>
                     <input
                         type='text'
                         placeholder='Address'
                         name='address'
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
+
                     />
 
                     {/* City */}
+                    <label>City <span className="validation-errors">{errors.city}</span></label>
                     <input
                         type='text'
                         placeholder='City'
                         name='city'
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
+
                     />
 
                     {/* State */}
+                    <label>State <span className="validation-errors">{errors.state}</span></label>
                     <input
                         type='text'
                         placeholder='STATE'
                         name='state'
                         value={state}
                         onChange={(e) => setState(e.target.value)}
+
                     />
 
                     <hr />
@@ -97,7 +131,9 @@ export default function CreateSpot() {
                         rows='10'
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
+
                     ></textarea>
+                    <div><span className="validation-errors">{errors.description}</span></div>
 
                     <hr />
 
@@ -110,7 +146,9 @@ export default function CreateSpot() {
                         name='title'
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
+
                     />
+                    <div><span className="validation-errors">{errors.title}</span></div>
 
                     <hr />
 
@@ -118,53 +156,57 @@ export default function CreateSpot() {
                     <h4>Set a base price for your spot</h4>
                     <p>Competitive pricing can help your listing stand out and rank higher in search results.</p>
                     <input
-                        type='text'
+                        type='number'
                         placeholder='Price'
                         name='price'
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
+
                     />
+                    <div><span className="validation-errors">{errors.price}</span></div>
 
                     <hr />
 
                     {/* Spot Photos */}
-                    {/* <h4>Liven up your spot with photos</h4>
+                    <h4>Liven up your spot with photos</h4>
                     <p>Submit a link to at least one photo to publish your spot.</p>
                     <input
-                        type='text'
-                        placeholder='title'
-                        name='title'
-                        value={title}
+                        type='url'
+                        placeholder='Preview image URL'
+                        name='previewImageUrl'
+                        value={previewImageUrl}
+                        onChange={(e) => setTitle(e.target.value)}
+
+                    />
+                    <div><span className="validation-errors">{errors.previewImageUrl}</span></div>
+                    <input
+                        type='url'
+                        placeholder='Image URL'
+                        name='imageUrl'
+                        value={imageUrl}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <input
-                        type='text'
-                        placeholder='title'
-                        name='title'
-                        value={title}
+                        type='url'
+                        placeholder='Image URL'
+                        name='imageUrl'
+                        value={imageUrl}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <input
-                        type='text'
-                        placeholder='title'
-                        name='title'
-                        value={title}
+                        type='url'
+                        placeholder='Image URL'
+                        name='imageUrl'
+                        value={imageUrl}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <input
-                        type='text'
-                        placeholder='title'
-                        name='title'
-                        value={title}
+                        type='url'
+                        placeholder='Image URL'
+                        name='imageUrl'
+                        value={imageUrl}
                         onChange={(e) => setTitle(e.target.value)}
                     />
-                    <input
-                        type='text'
-                        placeholder='title'
-                        name='title'
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    /> */}
 
                     <hr />
 

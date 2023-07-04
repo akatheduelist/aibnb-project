@@ -12,6 +12,7 @@ function Navigation({ isLoaded }) {
 
         <div className="navigation navigation-container">
             <NavLink exact to="/"><img className='navigation logo' src={logo} alt={'AirDnB Logo'} /></NavLink>
+            <NavLink className="navigation new-spot-button" exact to="/spots/new">Create a New Spot</NavLink>
                 {isLoaded && (
                     <div>
                         <ProfileButton user={sessionUser} />
