@@ -4,19 +4,22 @@ import { getAllSpots } from '../../store/spot';
 import testImg from '../../images/testspot.jpg';
 import './LandingPage.css';
 
-export default function LandingPage(store) {
+export default function LandingPage() {
     const dispatch = useDispatch();
-    const allSpots = useSelector((state) => Object.values(state.spots.allSpots));
+    const allSpots = Object.values(
+        useSelector((state) => (state.spots.allSpots ? state.spots.allSpots : []))
+    );
+    console.log("Landing Page ALL SPOTS => ", allSpots);
 
-    // console.log("Landing Page ALL SPOTS => ", allSpots);
     useEffect(() => {
         dispatch(getAllSpots());
     }, [dispatch]);
 
+
     return (
         <>
             <div className="landing-page landing-page-container">
-                {allSpots.map(({ name, city, state, avgRating, price, previewImage }) =>
+                {allSpots?.map(({ name, city, state, avgRating, price, previewImage }) =>
                     <>
                         <div className="landing-page card-container">
                             <div>

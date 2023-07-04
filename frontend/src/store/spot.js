@@ -20,7 +20,7 @@ const removeSpot = () => {
 };
 
 const loadSpots = (spots) => {
-    console.log("Dispatch to getSpot => SENT!")
+    console.log("ACTION GET_ALL_SPOTS => SENT!")
     return {
         type: GET_ALL_SPOTS,
         spots
@@ -28,15 +28,15 @@ const loadSpots = (spots) => {
 };
 
 export const getAllSpots = () => async (dispatch) => {
-    const response = await fetch("/api/spots")
-    console.log("RESPONSE")
-    if (response.ok){
-        console.log("OK")
-        const data = await response.json();
-        console.log("DATA", data.Spots)
-        dispatch(loadSpots(data.Spots))
+    const res = await fetch("/api/spots")
+    console.log("FETCH")
 
-        return data;
+    if (res.ok){
+        console.log("RESPONSE OK")
+        const data = await res.json();
+        console.log("RESPONSE DATA", data.Spots)
+        dispatch(loadSpots(data.Spots))
+        // return data;
     }
 };
 
@@ -69,21 +69,16 @@ export const deleteSpot = () => async (dispatch) => {
     // return response;
 };
 
-
-// console.log("Get All Spots DATA => ", readSpot())
-// const allSpots = {}
-
 const initialState = {};
 
 export default function spotReducer(state = initialState, action) {
-    const newState = {};
     switch(action.type){
         case GET_ALL_SPOTS:{
-            newState.allSpots = {}
+            const newState = {...state, allSpots: {}};
             action.spots.forEach(spot => {
                 newState.allSpots[spot.id] = spot
             });
-            console.log("getSpot Reducer HIT! =>", newState)
+            console.log("GET_ALL_SPOTS REDUCER HIT! =>", newState)
             return newState;
         }
         // case SET_SPOT:
@@ -95,5 +90,4 @@ export default function spotReducer(state = initialState, action) {
         default:
             return state;
     }
-
 }
