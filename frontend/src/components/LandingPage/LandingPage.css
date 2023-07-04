@@ -1,41 +1,42 @@
 .landing-page {
-    color: purple;
+  color: purple;
 }
 
 .landing-page-container {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-start;
-    border: 2px solid pink;
-    margin: 1.6em auto;
-    max-width: 62.5em;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  border: 2px solid pink;
+  margin: 1.6em auto;
+  max-width: 62.5em;
 }
 
 .card-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 2px dashed blue;
-    width: 14.3em;
-    height: 15.3em;
-    margin: .7em .5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px dashed blue;
+  width: 14.3em;
+  height: 15.3em;
+  margin: 0.7em 0.5em;
+  cursor: pointer;
 }
 .card-img {
-    width: 100%;
-    border: 1px dotted brown;
-    margin-bottom: 4px;
+  width: 100%;
+  border: 1px dotted brown;
+  margin-bottom: 4px;
 }
 
 .card-details {
-    display: flex;
-    justify-content: space-between;
-    border: 1px solid fuchsia;
-    width: 96%;
-    margin-bottom: .3em;
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid fuchsia;
+  width: 96%;
+  margin-bottom: 0.3em;
 }
 
 .card-price {
-    border: 1px solid lime;
-    width: 96%;
+  border: 1px solid lime;
+  width: 96%;
 }

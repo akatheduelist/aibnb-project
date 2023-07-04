@@ -16,6 +16,7 @@
 
 .logo {
     height: 43px;
+    cursor: pointer;
 }
 
 .user-button{
@@ -28,7 +29,7 @@
     background-color: #ffffff;
     border: 1px solid #dddddd;
     border-radius: 30px;
-
+    cursor: pointer;
 }
 
 .user-button:hover {
