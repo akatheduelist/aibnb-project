@@ -52,7 +52,7 @@ export default function SpotDetail () {
             </span>
           </div>
           <div>
-            <button>Reserve</button>
+            <button onClick={(e) => window.alert("Feature coming soon")}>Reserve</button>
           </div>
         </div>
 

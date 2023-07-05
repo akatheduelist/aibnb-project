@@ -1,51 +1,68 @@
 .landing-page {
-  color: purple;
-  font-size: ;
+  color: #222222;
+  font-family: 'Manrope', sans-serif;
 }
 
 .landing-page-container {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-start;
-  border: 2px solid pink;
+  justify-content: center;
+  /* border: 2px solid pink; */
   margin: 1.6em auto;
-  width: 72em;
+  max-width: 72em;
 }
 
 .card-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 2px dashed blue;
-  width: 16em;
-  height: 20em;
+  /* border: 2px dashed blue; */
+  width: 270px;
+  height: 360px;
   margin: 0.7em 0.5em;
   cursor: pointer;
 }
 .card-img {
-  width: 16em;
-  height: 16em;
-  border: 1px dotted brown;
-  margin-bottom: 4px;
+  width: 270px;
+  height: 260px;
+  /* border: 1px dotted brown; */
+  margin-bottom: .5em;
   object-fit: cover;
+  border-radius: 12px;
 }
 
 .card-details {
   display: flex;
   justify-content: space-between;
-  border: 1px solid fuchsia;
-  width: 96%;
+  /* border: 1px solid fuchsia; */
+  width: 98%;
   margin-bottom: 0.5em;
-  font-size: 14px;
+  font-size: .94em;
+}
+
+.avg-rating {
+  font-size: .92em;
 }
 
 .card-price {
-  border: 1px solid lime;
-  width: 96%;
-  font-size: 15px;
+  /* border: 1px solid lime; */
+  width: 98%;
+  font-size: .94em;
 }
 
-.card-price .bold {
-  font-weight: bold;
+.city-state {
+  max-width: 80%
+}
+
+.regular {
+  font-weight: 300;
+}
+
+.medium {
+  font-weight: 600;
+}
+
+.bold {
+  font-weight: 700;
 }

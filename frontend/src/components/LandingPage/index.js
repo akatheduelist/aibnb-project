@@ -35,14 +35,14 @@ export default function LandingPage () {
                   />
                 </div>
                 <div className='card-details'>
-                  <span>{`${city}, ${state}`}</span>
-                  <span className='avg-rating'>
-                    <i class='fa-solid fa-star' />
+                  <span className="medium city-state">{`${city}, ${state}`}</span>
+                  <span className='regular avg-rating'>
+                    <i class='fa-solid fa-star fa-xs' />
                     {` ${avgRating !== 'NaN' ? avgRating : 'New'}`}
                   </span>
                 </div>
                 <div className='card-price'>
-                  <span className='bold'>{`$${price} `}</span><span>night</span>
+                  <span className='medium'>{`$${price} `}</span><span>night</span>
                 </div>
               </div>
             </>
