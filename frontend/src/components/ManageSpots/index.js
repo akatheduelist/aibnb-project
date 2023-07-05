@@ -1,24 +1,28 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
-import { getAllSpots } from '../../store/spot'
+import { useHistory, Redirect } from 'react-router-dom'
+import * as spotActions from '../../store/spot'
 import './ManageSpots.css'
 
 export default function ManageSpots () {
   const history = useHistory()
   const dispatch = useDispatch()
+
+  // useEffect(() => {
+  //   dispatch(spotActions.getAllSpots())
+  // }, [dispatch])
+
   const allSpots = Object.values(
     useSelector(state => (state.spots.allSpots ? state.spots.allSpots : []))
   )
 
   const currentSpots = []
-  currentSpots.push(allSpots.find(spot => spot.ownerId === 1))
+  if (allSpots.length) {
+    currentSpots.push(allSpots.find(spot => spot.ownerId === 1))
+  }
 
+  console.log('MANAGE SPOTS => ALL SPOTS => ', allSpots)
   console.log('MANAGE SPOTS => CURRENT SPOTS => ', currentSpots)
-
-  useEffect(() => {
-    dispatch(getAllSpots())
-  }, [dispatch])
 
   return (
     <>
@@ -28,6 +32,7 @@ export default function ManageSpots () {
       </div>
 
       <div className='landing-page landing-page-container'>
+        {console.log("CURRENT SPOTS PAGE HIT! => ", currentSpots.length)}
         {currentSpots?.map(
           ({ id, name, city, state, avgRating, price, previewImage }) => (
             <>
@@ -46,7 +51,7 @@ export default function ManageSpots () {
                 <div className='card-details'>
                   <span className='medium city-state'>{`${city}, ${state}`}</span>
                   <span className='regular avg-rating'>
-                    <i class='fa-solid fa-star fa-xs' />
+                    <i className='fa-solid fa-star fa-xs' />
                     {` ${avgRating !== 'NaN' ? avgRating : 'New'}`}
                   </span>
                 </div>
@@ -56,7 +61,7 @@ export default function ManageSpots () {
                 </div>
                 <div className='card-update-delete'>
                   <span>
-                    <button>Update</button>
+                    <button onClick={(e) => Redirect(`/spots/${id}/edit`)}>Update</button>
                   </span>
                   <span>
                     <button>Delete</button>

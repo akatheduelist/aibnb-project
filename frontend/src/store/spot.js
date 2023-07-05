@@ -2,8 +2,9 @@ import { csrfFetch } from './csrf'
 
 const SET_SPOT = 'spot/setSpot'
 const REMOVE_SPOT = 'spot/removeSpot'
-const GET_ALL_SPOTS = 'spot/getAllSpots'
+const UPDATE_SPOT = 'spot/updateSpot'
 const GET_SPOT_BY_ID = 'spot/getSpotById'
+const GET_ALL_SPOTS = 'spot/getAllSpots'
 
 // ACTIONS
 const setSpot = spot => {
@@ -17,6 +18,14 @@ const setSpot = spot => {
 const removeSpot = () => {
   return {
     type: REMOVE_SPOT
+  }
+}
+
+const updateSpot = spot => {
+  console.log('UPDATE SPOT => ACTION => HIT!')
+  return {
+    type: UPDATE_SPOT,
+    spot
   }
 }
 
@@ -37,31 +46,6 @@ const loadSpots = spots => {
 }
 
 // ACTION THUNK MIDDLEWARE
-export const getAllSpots = () => async dispatch => {
-  const res = await fetch('/api/spots')
-  console.log('GET ALL SPOTS => FETCH')
-
-  if (res.ok) {
-    console.log('RESPONSE OK')
-    const data = await res.json()
-    console.log('RESPONSE DATA', data.Spots)
-    dispatch(loadSpots(data.Spots))
-    return data.Spots
-  }
-}
-
-export const getSpotById = spotId => async dispatch => {
-  const res = await csrfFetch(`/api/spots/${spotId}`)
-  console.log('GET SPOT BY ID => THUNK FETCH => ', res.status)
-
-  if (res.ok) {
-    const data = await res.json()
-    console.log('GET SPOT BY ID => THUNK RES => ', data)
-    dispatch(readSpotById(data))
-    return data
-  }
-}
-
 export const createSpot =
   ({ country, address, city, state, description, title, price }) =>
   async dispatch => {
@@ -86,6 +70,52 @@ export const createSpot =
     dispatch(setSpot(data))
     return console.log('THUNK RETURN', res)
   }
+
+export const putSpot =
+  ({ id, country, address, city, state, description, title, price }) =>
+  async dispatch => {
+    console.log('UPDATE SPOT => THUNK => HIT!')
+    const res = await csrfFetch(`/api/spots/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        country,
+        address,
+        city,
+        state,
+        description,
+        name: title,
+        price
+      })
+    })
+    const data = await res.json()
+    console.log('createSpot THUNK => Database Respsonse => ', data)
+    dispatch(setSpot(data))
+    return console.log('THUNK RETURN', res)
+  }
+export const getAllSpots = () => async dispatch => {
+  const res = await fetch('/api/spots')
+  console.log('GET ALL SPOTS => FETCH')
+
+  if (res.ok) {
+    console.log('RESPONSE OK')
+    const data = await res.json()
+    console.log('RESPONSE DATA', data.Spots)
+    dispatch(loadSpots(data.Spots))
+    return data.Spots
+  }
+}
+
+export const getSpotById = spotId => async dispatch => {
+  const res = await csrfFetch(`/api/spots/${spotId}`)
+  console.log('GET SPOT BY ID => THUNK FETCH => ', res.status)
+
+  if (res.ok) {
+    const data = await res.json()
+    console.log('GET SPOT BY ID => THUNK RES => ', data)
+    dispatch(readSpotById(data))
+    return data
+  }
+}
 
 export const deleteSpot = () => async dispatch => {
   // return response;
