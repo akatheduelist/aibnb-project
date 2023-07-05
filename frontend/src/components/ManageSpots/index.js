@@ -7,14 +7,14 @@ import './ManageSpots.css'
 export default function ManageSpots () {
   const history = useHistory()
   const dispatch = useDispatch()
-
-  // useEffect(() => {
-  //   dispatch(spotActions.getAllSpots())
-  // }, [dispatch])
-
   const allSpots = Object.values(
     useSelector(state => (state.spots.allSpots ? state.spots.allSpots : []))
   )
+
+  useEffect(() => {
+    dispatch(spotActions.getAllSpots())
+  }, [dispatch])
+
 
   const currentSpots = []
   if (allSpots.length) {
@@ -59,15 +59,15 @@ export default function ManageSpots () {
                   <span className='medium'>{`$${price} `}</span>
                   <span>night</span>
                 </div>
+              </div>
                 <div className='card-update-delete'>
                   <span>
-                    <button onClick={(e) => Redirect(`/spots/${id}/edit`)}>Update</button>
+                    <button onClick={(e) => history.push(`/spots/${id}/edit`)}>Update</button>
                   </span>
                   <span>
                     <button>Delete</button>
                   </span>
                 </div>
-              </div>
             </>
           )
         )}

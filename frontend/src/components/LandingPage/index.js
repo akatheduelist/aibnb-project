@@ -1,20 +1,22 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { getAllSpots } from '../../store/spot'
+import * as spotActions from '../../store/spot'
 import './LandingPage.css'
 
 export default function LandingPage () {
   const history = useHistory()
   const dispatch = useDispatch()
   const allSpots = Object.values(
-    useSelector(state => (state.spots.allSpots ? state.spots.allSpots : []))
+    useSelector(state => (state.spots.allSpots))
   )
+
   console.log('Landing Page ALL SPOTS => ', allSpots)
 
   useEffect(() => {
-    dispatch(getAllSpots())
-  }, [dispatch])
+      dispatch(spotActions.getAllSpots())
+    }, [dispatch])
+
 
   return (
     <>
@@ -37,7 +39,7 @@ export default function LandingPage () {
                 <div className='card-details'>
                   <span className="medium city-state">{`${city}, ${state}`}</span>
                   <span className='regular avg-rating'>
-                    <i class='fa-solid fa-star fa-xs' />
+                    <i className='fa-solid fa-star fa-xs' />
                     {` ${avgRating !== 'NaN' ? avgRating : 'New'}`}
                   </span>
                 </div>

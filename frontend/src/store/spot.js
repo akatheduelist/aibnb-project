@@ -92,6 +92,7 @@ export const putSpot =
     dispatch(setSpot(data))
     return console.log('THUNK RETURN', res)
   }
+
 export const getAllSpots = () => async dispatch => {
   const res = await fetch('/api/spots')
   console.log('GET ALL SPOTS => FETCH')
@@ -101,7 +102,7 @@ export const getAllSpots = () => async dispatch => {
     const data = await res.json()
     console.log('RESPONSE DATA', data.Spots)
     dispatch(loadSpots(data.Spots))
-    return data.Spots
+    // return data.Spots
   }
 }
 
@@ -113,7 +114,7 @@ export const getSpotById = spotId => async dispatch => {
     const data = await res.json()
     console.log('GET SPOT BY ID => THUNK RES => ', data)
     dispatch(readSpotById(data))
-    return data
+    // return data
   }
 }
 
@@ -122,12 +123,14 @@ export const deleteSpot = () => async dispatch => {
 }
 
 // REDUCER
-const initialState = {}
 
-export default function spotReducer (state = initialState, action) {
+export default function spotReducer (
+  state = { allSpots: {}, singleSpot: {} },
+  action
+) {
   switch (action.type) {
     case GET_ALL_SPOTS: {
-      const newState = { ...state, allSpots: {} }
+      const newState = { ...state, allSpots: {...state.allSpots}, singleSpot: {} }
       action.spots.forEach(spot => {
         newState.allSpots[spot.id] = spot
       })
@@ -135,13 +138,11 @@ export default function spotReducer (state = initialState, action) {
       return newState
     }
     case GET_SPOT_BY_ID: {
-      const newState = { ...state, singleSpot: {} }
-      newState.singleSpot = action.spot
-      console.log('GET_SPOT_BY_ID => REDUCER => ', newState)
-      return newState
+      console.log("GET_SPOT_BY_ID REDUCER HIT! => ", action.spot)
+      return { ...state, singleSpot: action.spot }
     }
     case SET_SPOT:
-      const newState = { ...state, singleSpot: {} }
+      const newState = { ...state }
       console.log('SET_SPOT REDUCER => HIT!')
       newState.singleSpot = action.payload
       console.log('SET_SPOT REDUCER => newState => ', newState)

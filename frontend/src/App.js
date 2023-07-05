@@ -16,7 +16,6 @@ function App () {
   useEffect(() => {
     dispatch(sessionActions.restoreUser())
       .then(() => setIsLoaded(true))
-      .then(dispatch(spotActions.getAllSpots()))
   }, [dispatch])
 
   return (
