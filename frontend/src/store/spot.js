@@ -132,7 +132,6 @@ export const deleteSpot = (spotId) => async dispatch => {
 }
 
 // REDUCER
-
 export default function spotReducer (
   state = { allSpots: {}, singleSpot: {} },
   action

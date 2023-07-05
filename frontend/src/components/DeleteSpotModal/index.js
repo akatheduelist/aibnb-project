@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 
 function DeleteSpotModal({ id }) {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
     const [errors, setErrors] = useState({});
     const { closeModal } = useModal();
 
@@ -15,7 +15,7 @@ function DeleteSpotModal({ id }) {
 
         console.log("DELETE SPOT BUTTON => ", id)
         return dispatch(spotActions.deleteSpot(id))
-            .then(closeModal)
+          .then(closeModal)
             .catch(async (res) => {
                 const data = await res.json();
                 console.log("DELETE SPOT Data => ", data)
