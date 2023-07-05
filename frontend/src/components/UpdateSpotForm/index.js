@@ -8,23 +8,23 @@ export default function UpdateSpot () {
   const dispatch = useDispatch()
   const history = useHistory()
   const { spotId } = useParams()
-  const [country, setCountry] = useState('')
-  const [address, setAddress] = useState('')
-  const [city, setCity] = useState('')
-  const [state, setState] = useState('')
-  const [description, setDescription] = useState('')
-  const [title, setTitle] = useState('')
-  const [price, setPrice] = useState(0)
-  const [imageUrl, setImageUrl] = useState('')
-  const [previewImageUrl, setPreviewImageUrl] = useState('')
-  const [errors, setErrors] = useState({})
   const currentSpot = useSelector(state => state.spots.singleSpot)
+  const [country, setCountry] = useState(currentSpot.country)
+  const [address, setAddress] = useState(currentSpot.address)
+  const [city, setCity] = useState(currentSpot.city)
+  const [state, setState] = useState(currentSpot.state)
+  const [description, setDescription] = useState(currentSpot.descriptions)
+  const [title, setTitle] = useState(currentSpot.name)
+  const [price, setPrice] = useState(currentSpot.price)
+  const [previewImageUrl, setPreviewImageUrl] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
+  const [errors, setErrors] = useState({})
 
   useEffect(() => {
     dispatch(spotActions.getSpotById(spotId))
   }, [dispatch])
 
-  console.log('UPDATE SPOT PAGE => CURRENT SPOT => ', currentSpot.SpotImages)
+  // console.log('UPDATE SPOT PAGE => CURRENT SPOT => ', currentSpot.SpotImages)
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -40,7 +40,7 @@ export default function UpdateSpot () {
       error.description = 'Description needs 30 or more characters'
     if (!title) error.title = 'Name is required'
     if (!price) error.price = 'Price is required'
-    if (!previewImageUrl) error.previewImageUrl = 'Preview image is required'
+    // if (!previewImageUrl) error.previewImageUrl = 'Preview image is required'
 
     // const validImgFormats = [".jpg", ".png", ".jpeg"]
     // if (!imageUrl.slice(-4).toLowerCase().some(slice => image) || !imageUrl.slice(-4).toLowerCase().includes(".jpg")) error.imageUrl = "Image URL must end in .png, .jpg, or .jpeg";
@@ -86,7 +86,6 @@ export default function UpdateSpot () {
   }
   return (
     <>
-      {console.log('RETURN HIT!')}
       <div className='create-spot create-spot-container'>
         <div className='create-spot header'>
           <h2>Update your Spot</h2>
@@ -105,9 +104,9 @@ export default function UpdateSpot () {
             </label>
             <input
               type='text'
-              placeholder='Country'
+              placeholder={currentSpot.country}
               name='country'
-              value={currentSpot.country}
+              value={country}
               onChange={e => setCountry(e.target.value)}
             />
 
@@ -118,9 +117,9 @@ export default function UpdateSpot () {
             </label>
             <input
               type='text'
-              placeholder='Address'
+              placeholder={currentSpot.address}
               name='address'
-              value={currentSpot.address}
+              value={address}
               onChange={e => setAddress(e.target.value)}
             />
 
@@ -130,9 +129,9 @@ export default function UpdateSpot () {
             </label>
             <input
               type='text'
-              placeholder='City'
+              placeholder={currentSpot.city}
               name='city'
-              value={currentSpot.city}
+              value={city}
               onChange={e => setCity(e.target.value)}
             />
 
@@ -142,9 +141,9 @@ export default function UpdateSpot () {
             </label>
             <input
               type='text'
-              placeholder='STATE'
+              placeholder={currentSpot.state}
               name='state'
-              value={currentSpot.state}
+              value={state}
               onChange={e => setState(e.target.value)}
             />
 
@@ -158,10 +157,10 @@ export default function UpdateSpot () {
               neighborhood.
             </p>
             <textarea
-              placeholder='Please write at least 30 characters'
+              placeholder={currentSpot.descriptions}
               name='description'
               rows='10'
-              value={currentSpot.descriptions}
+              value={description}
               onChange={e => setDescription(e.target.value)}
             ></textarea>
             <div>
@@ -178,9 +177,9 @@ export default function UpdateSpot () {
             </p>
             <input
               type='text'
-              placeholder='title'
+              placeholder={currentSpot.name}
               name='title'
-              value={currentSpot.name}
+              value={title}
               onChange={e => setTitle(e.target.value)}
             />
             <div>
@@ -197,9 +196,9 @@ export default function UpdateSpot () {
             </p>
             <input
               type='number'
-              placeholder='Price'
+              placeholder={currentSpot.price}
               name='price'
-              value={currentSpot.price}
+              value={price}
               onChange={e => setPrice(e.target.value)}
             />
             <div>

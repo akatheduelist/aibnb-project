@@ -2,6 +2,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { useHistory, Redirect } from 'react-router-dom'
 import * as spotActions from '../../store/spot'
+import OpenModalMenuItem from '../Navigation/OpenModalMenuItem'
+import DeleteSpotModal from '../DeleteSpotModal'
 import './ManageSpots.css'
 
 export default function ManageSpots () {
@@ -14,7 +16,6 @@ export default function ManageSpots () {
   useEffect(() => {
     dispatch(spotActions.getAllSpots())
   }, [dispatch])
-
 
   const currentSpots = []
   if (allSpots.length) {
@@ -32,7 +33,7 @@ export default function ManageSpots () {
       </div>
 
       <div className='landing-page landing-page-container'>
-        {console.log("CURRENT SPOTS PAGE HIT! => ", currentSpots.length)}
+        {console.log('CURRENT SPOTS PAGE HIT! => ', currentSpots.length)}
         {currentSpots?.map(
           ({ id, name, city, state, avgRating, price, previewImage }) => (
             <>
@@ -60,14 +61,19 @@ export default function ManageSpots () {
                   <span>night</span>
                 </div>
               </div>
-                <div className='card-update-delete'>
-                  <span>
-                    <button onClick={(e) => history.push(`/spots/${id}/edit`)}>Update</button>
-                  </span>
-                  <span>
-                    <button>Delete</button>
-                  </span>
-                </div>
+              <div className='card-update-delete'>
+                <span>
+                  <button onClick={e => history.push(`/spots/${id}/edit`)}>
+                    Update
+                  </button>
+                </span>
+                <span>
+                  <OpenModalMenuItem
+                    itemText='Delete'
+                    modalComponent={<DeleteSpotModal id={id} />}
+                  />
+                </span>
+              </div>
             </>
           )
         )}

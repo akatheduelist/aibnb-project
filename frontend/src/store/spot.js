@@ -1,7 +1,7 @@
 import { csrfFetch } from './csrf'
 
 const SET_SPOT = 'spot/setSpot'
-const REMOVE_SPOT = 'spot/removeSpot'
+const DELETE_SPOT = 'spot/removeSpot'
 const UPDATE_SPOT = 'spot/updateSpot'
 const GET_SPOT_BY_ID = 'spot/getSpotById'
 const GET_ALL_SPOTS = 'spot/getAllSpots'
@@ -15,9 +15,9 @@ const setSpot = spot => {
   }
 }
 
-const removeSpot = () => {
+const removeSpot = (spotId) => {
   return {
-    type: REMOVE_SPOT
+    type: DELETE_SPOT
   }
 }
 
@@ -118,7 +118,16 @@ export const getSpotById = spotId => async dispatch => {
   }
 }
 
-export const deleteSpot = () => async dispatch => {
+export const deleteSpot = (spotId) => async dispatch => {
+  const res = await csrfFetch(`/api/spots/${spotId}`, {
+    method: "DELETE"
+  })
+  console.log('DELETE SPOT BY ID => THUNK =>', res.status)
+
+  if (res.ok) {
+    const data = await res.json()
+    dispatch(removeSpot(spotId))
+  }
   // return response;
 }
 
