@@ -1,5 +1,6 @@
 .landing-page {
   color: purple;
+  font-size: ;
 }
 
 .landing-page-container {
@@ -9,7 +10,7 @@
   justify-content: flex-start;
   border: 2px solid pink;
   margin: 1.6em auto;
-  max-width: 62.5em;
+  width: 72em;
 }
 
 .card-container {
@@ -17,15 +18,17 @@
   flex-direction: column;
   align-items: center;
   border: 2px dashed blue;
-  width: 14.3em;
-  height: 15.3em;
+  width: 16em;
+  height: 20em;
   margin: 0.7em 0.5em;
   cursor: pointer;
 }
 .card-img {
-  width: 100%;
+  width: 16em;
+  height: 16em;
   border: 1px dotted brown;
   margin-bottom: 4px;
+  object-fit: cover;
 }
 
 .card-details {
@@ -33,10 +36,16 @@
   justify-content: space-between;
   border: 1px solid fuchsia;
   width: 96%;
-  margin-bottom: 0.3em;
+  margin-bottom: 0.5em;
+  font-size: 14px;
 }
 
 .card-price {
   border: 1px solid lime;
   width: 96%;
+  font-size: 15px;
+}
+
+.card-price .bold {
+  font-weight: bold;
 }

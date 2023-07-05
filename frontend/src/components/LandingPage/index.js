@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { getAllSpots } from '../../store/spot'
-import testImg from '../../images/testspot.jpg'
 import './LandingPage.css'
 
 export default function LandingPage () {
@@ -30,7 +29,7 @@ export default function LandingPage () {
                 <div>
                   <img
                     className='card-img'
-                    src={testImg}
+                    src={previewImage}
                     title={name}
                     alt={name}
                   />
@@ -43,7 +42,7 @@ export default function LandingPage () {
                   </span>
                 </div>
                 <div className='card-price'>
-                  <span>{`$${price} night`}</span>
+                  <span className='bold'>{`$${price} `}</span><span>night</span>
                 </div>
               </div>
             </>
