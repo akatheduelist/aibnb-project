@@ -70,7 +70,7 @@ export default function UpdateSpot () {
           title,
           price
         })
-      )
+      ).then(() => history.push(`/spots/${spotId}`))
     }
   }
 

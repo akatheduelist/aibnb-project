@@ -1,6 +1,8 @@
 import { useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import OpenModalMenuItem from '../Navigation/OpenModalMenuItem'
+import DeleteReviewModal from '../DeleteReviewModal'
 import * as spotActions from '../../store/spot'
 import * as reviewActions from '../../store/review'
 
@@ -20,6 +22,7 @@ export default function SpotDetail () {
   const reviewsBySpotId = Object.values(
     useSelector(state => state.reviews.spot)
   )
+  const { id } = useSelector(state => state.session.user)
 
   useEffect(() => {
     dispatch(spotActions.getSpotById(spotId))
@@ -84,11 +87,21 @@ export default function SpotDetail () {
       </div>
       <div>
         <h1>Reviews</h1>
-        {reviewsBySpotId.map(review => (
+        {reviewsBySpotId?.map(review => (
           <>
             <h3>{review.User.firstName}</h3>
             <div>{review.createdAt}</div>
             <div>{review.review}</div>
+            <div>
+              {review.userId === id ? (
+                <>
+                  <OpenModalMenuItem
+                    itemText='Delete'
+                    modalComponent={<DeleteReviewModal reviewId={review.id} />}
+                  />
+                </>
+              ) : null}
+            </div>
           </>
         ))}
       </div>
