@@ -54,11 +54,8 @@ export const getSpotById = spotId => async dispatch => {
   }
 }
 
-// Updating spot does not need an action or reducer becuase we are not going to update
-// the state. We will let the getSpotById fetch the new state after update has run.
-// Try with standard middleware, remove thunk callback?
 export const putSpotById =
-  ({ id, country, address, city, state, description, title, price }) =>
+  ({ id, country, address, city, state, lat, lng, description, title, price }) =>
   async dispatch => {
     const res = await csrfFetch(`/api/spots/${id}`, {
       method: 'PUT',
@@ -67,6 +64,8 @@ export const putSpotById =
         address,
         city,
         state,
+        lat,
+        lng,
         description,
         name: title,
         price
@@ -120,7 +119,7 @@ export const deleteSpot = spotId => async dispatch => {
 }
 
 // REDUCER
-const initialState = { allSpots: {}, singleSpot: {} }
+const initialState = { allSpots: {}, singleSpot: { SpotImages: [] } }
 
 export default function spotReducer (state = initialState, action) {
   switch (action.type) {
@@ -132,8 +131,7 @@ export default function spotReducer (state = initialState, action) {
       return newState
     }
     case READ_SPOT_BY_ID: {
-      return { ...state, allSpots: {...state.allSpots}, singleSpot: action.spot }
-    }
+      return { ...state, allSpots: { ...state.allSpots }, singleSpot: action.spot } }
     case SET_SPOT:
       const newState = { ...state }
       console.log('SET_SPOT REDUCER => HIT!')

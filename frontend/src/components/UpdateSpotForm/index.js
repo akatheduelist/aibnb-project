@@ -9,13 +9,13 @@ export default function UpdateSpot () {
   const history = useHistory()
   const { spotId } = useParams()
   const currentSpot = useSelector(state => state.spots.singleSpot)
-  const [country, setCountry] = useState(currentSpot.country)
-  const [address, setAddress] = useState(currentSpot.address)
-  const [city, setCity] = useState(currentSpot.city)
-  const [state, setState] = useState(currentSpot.state)
-  const [description, setDescription] = useState(currentSpot.descriptions)
-  const [title, setTitle] = useState(currentSpot.name)
-  const [price, setPrice] = useState(currentSpot.price)
+  const [country, setCountry] = useState('')
+  const [address, setAddress] = useState('')
+  const [city, setCity] = useState('')
+  const [state, setState] = useState('')
+  const [description, setDescription] = useState('')
+  const [title, setTitle] = useState('')
+  const [price, setPrice] = useState(0)
   const [previewImageUrl, setPreviewImageUrl] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [errors, setErrors] = useState({})
@@ -24,10 +24,21 @@ export default function UpdateSpot () {
     dispatch(spotActions.getSpotById(spotId))
   }, [dispatch])
 
+  useEffect(() => {
+    if (Object.keys(currentSpot.SpotImages).length) {
+      setCountry(currentSpot.country)
+      setAddress(currentSpot.address)
+      setCity(currentSpot.city)
+      setState(currentSpot.state)
+      setDescription(currentSpot.descriptions)
+      setTitle(currentSpot.name)
+      setPrice(currentSpot.price)
+      setPreviewImageUrl(currentSpot.SpotImages.find((image) => image.preview === true).url)
+    }
+  }, [currentSpot])
+
   const handleSubmit = e => {
     e.preventDefault()
-    console.log('NewSpot => HandleSubmit => HIT!')
-
     const error = {}
 
     if (!country) error.country = 'Country is required'
@@ -43,45 +54,26 @@ export default function UpdateSpot () {
     // const validImgFormats = [".jpg", ".png", ".jpeg"]
     // if (!imageUrl.slice(-4).toLowerCase().some(slice => image) || !imageUrl.slice(-4).toLowerCase().includes(".jpg")) error.imageUrl = "Image URL must end in .png, .jpg, or .jpeg";
 
-    console.log('Create new spot ERRORS => ', error)
     setErrors(error)
 
     if (!Object.keys(error).length) {
-      // dispatch(
-      //     createSpot({
-      //         country,
-      //         address,
-      //         city,
-      //         state,
-      //         description,
-      //         title,
-      //         price
-      //     })
-      //     )
-      console.log('UPDATE SPOT => ', {
-        country,
-        address,
-        city,
-        state,
-        description,
-        title,
-        price
-      })
+      dispatch(
+        spotActions.putSpotById({
+          id: spotId,
+          country,
+          address,
+          city,
+          state,
+          lat: -9.44293,
+          lng: 147.21051,
+          description,
+          title,
+          price
+        })
+      )
     }
-    reset()
   }
 
-  const reset = () => {
-    setCountry('')
-    setAddress('')
-    setCity('')
-    setState('')
-    setDescription('')
-    setTitle('')
-    setPrice(0)
-    setPreviewImageUrl('')
-    setImageUrl('')
-  }
   return (
     <>
       <div className='create-spot create-spot-container'>
@@ -212,9 +204,7 @@ export default function UpdateSpot () {
               type='url'
               placeholder='Preview image URL'
               name='previewImageUrl'
-              // value={
-              //   currentSpot.SpotImages.find(spot => spot.preview === true).url
-              // }
+              value={previewImageUrl}
               onChange={e => setPreviewImageUrl(e.target.value)}
             />
             <div>
@@ -233,33 +223,36 @@ export default function UpdateSpot () {
             <div>
               <span className='validation-errors'>{errors.imageUrl}</span>
             </div>
-
-            {/* <input
-                     type='url'
-                     placeholder='Image URL'
-                     name='imageUrl'
-                     value={imageUrl}
-                     onChange={(e) => setImageUrl(e.target.value)}
-                 />
-                 <div><span className="validation-errors">{errors.imageUrl}</span></div>
-
-                 <input
-                     type='url'
-                     placeholder='Image URL'
-                     name='imageUrl'
-                     value={imageUrl}
-                     onChange={(e) => setImageUrl(e.target.value)}
-                 />
-                 <div><span className="validation-errors">{errors.imageUrl}</span></div>
-
-                 <input
-                     type='url'
-                     placeholder='Image URL'
-                     name='imageUrl'
-                     value={imageUrl}
-                     onChange={(e) => setImageUrl(e.target.value)}
-                 />
-                 <div><span className="validation-errors">{errors.imageUrl}</span></div> */}
+            <input
+              type='url'
+              placeholder='Image URL'
+              name='imageUrl'
+              value={imageUrl}
+              onChange={e => setImageUrl(e.target.value)}
+            />
+            <div>
+              <span className='validation-errors'>{errors.imageUrl}</span>
+            </div>
+            <input
+              type='url'
+              placeholder='Image URL'
+              name='imageUrl'
+              value={imageUrl}
+              onChange={e => setImageUrl(e.target.value)}
+            />
+            <div>
+              <span className='validation-errors'>{errors.imageUrl}</span>
+            </div>
+            <input
+              type='url'
+              placeholder='Image URL'
+              name='imageUrl'
+              value={imageUrl}
+              onChange={e => setImageUrl(e.target.value)}
+            />
+            <div>
+              <span className='validation-errors'>{errors.imageUrl}</span>
+            </div>
 
             <hr />
 

@@ -7,15 +7,23 @@ import * as reviewActions from '../../store/review'
 export default function SpotDetail () {
   const { spotId } = useParams()
   const dispatch = useDispatch()
-  const { name, city, state, country, price, avgStarRating, descriptions, SpotImages } = useSelector(state => state.spots.singleSpot)
+  const {
+    name,
+    city,
+    state,
+    country,
+    price,
+    avgStarRating,
+    descriptions,
+    SpotImages
+  } = useSelector(state => state.spots.singleSpot)
   const reviewsBySpotId = Object.values(
     useSelector(state => state.reviews.spot)
   )
 
   useEffect(() => {
     dispatch(spotActions.getSpotById(spotId))
-    dispatch(reviewActions.getSpotReviews(spotId)
-    )
+    dispatch(reviewActions.getSpotReviews(spotId))
   }, [dispatch])
 
   return (
