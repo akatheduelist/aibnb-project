@@ -24,8 +24,6 @@ export default function UpdateSpot () {
     dispatch(spotActions.getSpotById(spotId))
   }, [dispatch])
 
-  // console.log('UPDATE SPOT PAGE => CURRENT SPOT => ', currentSpot.SpotImages)
-
   const handleSubmit = e => {
     e.preventDefault()
     console.log('NewSpot => HandleSubmit => HIT!')

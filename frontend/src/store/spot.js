@@ -1,12 +1,26 @@
 import { csrfFetch } from './csrf'
 
+const READ_ALL_SPOTS = 'spot/getAllSpots'
+const READ_SPOT_BY_ID = 'spot/getSpotById'
+
 const SET_SPOT = 'spot/setSpot'
 const DELETE_SPOT = 'spot/removeSpot'
-const UPDATE_SPOT = 'spot/updateSpot'
-const GET_SPOT_BY_ID = 'spot/getSpotById'
-const GET_ALL_SPOTS = 'spot/getAllSpots'
 
 // ACTIONS
+const readAllSpots = spots => {
+  return {
+    type: READ_ALL_SPOTS,
+    spots
+  }
+}
+
+const readSpotById = spot => {
+  return {
+    type: READ_SPOT_BY_ID,
+    spot
+  }
+}
+
 const setSpot = spot => {
   console.log('Dispatch to setSpot => SENT!')
   return {
@@ -15,39 +29,60 @@ const setSpot = spot => {
   }
 }
 
-const removeSpot = (spotId) => {
+const removeSpot = spotId => {
   return {
     type: DELETE_SPOT
   }
 }
 
-const updateSpot = spot => {
-  console.log('UPDATE SPOT => ACTION => HIT!')
-  return {
-    type: UPDATE_SPOT,
-    spot
-  }
-}
-
-const readSpotById = spot => {
-  console.log('READ SPOT BY ID => ACTION => HIT!')
-  return {
-    type: GET_SPOT_BY_ID,
-    spot
-  }
-}
-
-const loadSpots = spots => {
-  console.log('ACTION GET_ALL_SPOTS => SENT!')
-  return {
-    type: GET_ALL_SPOTS,
-    spots
-  }
-}
 
 // ACTION THUNK MIDDLEWARE
+export const getAllSpots = () => async dispatch => {
+  const res = await fetch('/api/spots')
+
+  if (res.ok) {
+    const data = await res.json()
+    return dispatch(readAllSpots(data.Spots))
+  }
+}
+export const getSpotById = spotId => async dispatch => {
+  const res = await csrfFetch(`/api/spots/${spotId}`)
+
+  if (res.ok) {
+    const data = await res.json()
+    return dispatch(readSpotById(data))
+  }
+}
+
+// Updating spot does not need an action or reducer becuase we are not going to update
+// the state. We will let the getSpotById fetch the new state after update has run.
+// Try with standard middleware, remove thunk callback?
+export const putSpotById =
+  ({ id, country, address, city, state, description, title, price }) =>
+  async dispatch => {
+    const res = await csrfFetch(`/api/spots/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        country,
+        address,
+        city,
+        state,
+        description,
+        name: title,
+        price
+      })
+    })
+
+    if (res.ok) {
+      const data = await res.json()
+      return data;
+    }
+  }
+
 export const createSpot =
   ({ country, address, city, state, description, title, price }) =>
+  //REMEBER SPOTS AND IMAGes have associations on the backend and may need to create an images thunk
+  // Might not need to go to reducer
   async dispatch => {
     console.log('createSpot THUNK => HIT!')
 
@@ -71,56 +106,9 @@ export const createSpot =
     return console.log('THUNK RETURN', res)
   }
 
-export const putSpot =
-  ({ id, country, address, city, state, description, title, price }) =>
-  async dispatch => {
-    console.log('UPDATE SPOT => THUNK => HIT!')
-    const res = await csrfFetch(`/api/spots/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        country,
-        address,
-        city,
-        state,
-        description,
-        name: title,
-        price
-      })
-    })
-    const data = await res.json()
-    console.log('createSpot THUNK => Database Respsonse => ', data)
-    dispatch(setSpot(data))
-    return console.log('THUNK RETURN', res)
-  }
-
-export const getAllSpots = () => async dispatch => {
-  const res = await fetch('/api/spots')
-  console.log('GET ALL SPOTS => FETCH')
-
-  if (res.ok) {
-    console.log('RESPONSE OK')
-    const data = await res.json()
-    console.log('RESPONSE DATA', data.Spots)
-    dispatch(loadSpots(data.Spots))
-    // return data.Spots
-  }
-}
-
-export const getSpotById = spotId => async dispatch => {
-  const res = await csrfFetch(`/api/spots/${spotId}`)
-  console.log('GET SPOT BY ID => THUNK FETCH => ', res.status)
-
-  if (res.ok) {
-    const data = await res.json()
-    console.log('GET SPOT BY ID => THUNK RES => ', data)
-    dispatch(readSpotById(data))
-    // return data
-  }
-}
-
-export const deleteSpot = (spotId) => async dispatch => {
+export const deleteSpot = spotId => async dispatch => {
   const res = await csrfFetch(`/api/spots/${spotId}`, {
-    method: "DELETE"
+    method: 'DELETE'
   })
   console.log('DELETE SPOT BY ID => THUNK =>', res.status)
 
@@ -132,22 +120,19 @@ export const deleteSpot = (spotId) => async dispatch => {
 }
 
 // REDUCER
-export default function spotReducer (
-  state = { allSpots: {}, singleSpot: {} },
-  action
-) {
+const initialState = { allSpots: {}, singleSpot: {} }
+
+export default function spotReducer (state = initialState, action) {
   switch (action.type) {
-    case GET_ALL_SPOTS: {
-      const newState = { ...state, allSpots: {...state.allSpots}, singleSpot: {} }
+    case READ_ALL_SPOTS: {
+      const newState = { ...state, allSpots: { ...state.allSpots } }
       action.spots.forEach(spot => {
         newState.allSpots[spot.id] = spot
       })
-      console.log('GET_ALL_SPOTS REDUCER HIT! =>', newState)
       return newState
     }
-    case GET_SPOT_BY_ID: {
-      console.log("GET_SPOT_BY_ID REDUCER HIT! => ", action.spot)
-      return { ...state, singleSpot: action.spot }
+    case READ_SPOT_BY_ID: {
+      return { ...state, allSpots: {...state.allSpots}, singleSpot: action.spot }
     }
     case SET_SPOT:
       const newState = { ...state }

@@ -7,20 +7,16 @@ import * as reviewActions from '../../store/review'
 export default function SpotDetail () {
   const { spotId } = useParams()
   const dispatch = useDispatch()
-  const spotById = useSelector(state => state.spots.singleSpot)
+  const { name, city, state, country, price, avgStarRating, descriptions, SpotImages } = useSelector(state => state.spots.singleSpot)
   const reviewsBySpotId = Object.values(
     useSelector(state => state.reviews.spot)
   )
-  const { name, city, state, country, price, avgStarRating, descriptions } =
-    spotById
 
   useEffect(() => {
-    dispatch(spotActions.getSpotById(spotId)).then(
-      dispatch(reviewActions.getSpotReviews(spotId))
+    dispatch(spotActions.getSpotById(spotId))
+    dispatch(reviewActions.getSpotReviews(spotId)
     )
   }, [dispatch])
-
-  console.log('REVIEW PAGE => BY SPOT ID => ', reviewsBySpotId)
 
   return (
     <>
@@ -30,9 +26,9 @@ export default function SpotDetail () {
           <span className='spot-location'>{`${city}, ${state}, ${country}`}</span>
         </div>
         <div className='image-gallery'>
-          {/* {SpotImages?.map(image => (
+          {SpotImages?.map(image => (
             <img src={image.url}></img>
-          ))} */}
+          ))}
         </div>
         <div className='spot-description'>
           <h3>{`Hosted By`}</h3>

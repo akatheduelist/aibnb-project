@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { useHistory, Redirect } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import * as spotActions from '../../store/spot'
 import OpenModalMenuItem from '../Navigation/OpenModalMenuItem'
 import DeleteSpotModal from '../DeleteSpotModal'
@@ -9,9 +9,8 @@ import './ManageSpots.css'
 export default function ManageSpots () {
   const history = useHistory()
   const dispatch = useDispatch()
-  const allSpots = Object.values(
-    useSelector(state => (state.spots.allSpots ? state.spots.allSpots : []))
-  )
+  const allSpots = Object.values(useSelector(state => state.spots.allSpots))
+  const { id } = useSelector(state => state.session.user)
 
   useEffect(() => {
     dispatch(spotActions.getAllSpots())
@@ -19,11 +18,8 @@ export default function ManageSpots () {
 
   const currentSpots = []
   if (allSpots.length) {
-    currentSpots.push(allSpots.find(spot => spot.ownerId === 1))
+    currentSpots.push(allSpots.find(spot => spot.ownerId === id))
   }
-
-  console.log('MANAGE SPOTS => ALL SPOTS => ', allSpots)
-  console.log('MANAGE SPOTS => CURRENT SPOTS => ', currentSpots)
 
   return (
     <>
@@ -31,9 +27,7 @@ export default function ManageSpots () {
         <h3>Manage Your Spots</h3>
         <button>Create a New Spot</button>
       </div>
-
       <div className='landing-page landing-page-container'>
-        {console.log('CURRENT SPOTS PAGE HIT! => ', currentSpots.length)}
         {currentSpots?.map(
           ({ id, name, city, state, avgRating, price, previewImage }) => (
             <>

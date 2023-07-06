@@ -7,16 +7,11 @@ import './LandingPage.css'
 export default function LandingPage () {
   const history = useHistory()
   const dispatch = useDispatch()
-  const allSpots = Object.values(
-    useSelector(state => (state.spots.allSpots))
-  )
-
-  console.log('Landing Page ALL SPOTS => ', allSpots)
+  const allSpots = Object.values(useSelector(state => state.spots.allSpots))
 
   useEffect(() => {
-      dispatch(spotActions.getAllSpots())
-    }, [dispatch])
-
+    dispatch(spotActions.getAllSpots())
+  }, [dispatch])
 
   return (
     <>
@@ -37,14 +32,15 @@ export default function LandingPage () {
                   />
                 </div>
                 <div className='card-details'>
-                  <span className="medium city-state">{`${city}, ${state}`}</span>
+                  <span className='medium city-state'>{`${city}, ${state}`}</span>
                   <span className='regular avg-rating'>
                     <i className='fa-solid fa-star fa-xs' />
                     {` ${avgRating !== 'NaN' ? avgRating : 'New'}`}
                   </span>
                 </div>
                 <div className='card-price'>
-                  <span className='medium'>{`$${price} `}</span><span>night</span>
+                  <span className='medium'>{`$${price} `}</span>
+                  <span>night</span>
                 </div>
               </div>
             </>
