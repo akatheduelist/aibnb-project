@@ -97,7 +97,7 @@ export default function SpotDetail () {
                 <>
                   <OpenModalMenuItem
                     itemText='Delete'
-                    modalComponent={<DeleteReviewModal reviewId={review.id} />}
+                    modalComponent={<DeleteReviewModal review={review} />}
                   />
                 </>
               ) : null}
