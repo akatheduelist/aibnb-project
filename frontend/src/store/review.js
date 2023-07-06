@@ -1,7 +1,6 @@
 import { csrfFetch } from "./csrf";
 
 const READ_REVIEWS_BY_SPOT_ID = 'review/readSpotReviews'
-const DELETE_REVIEW_BY_ID = 'review/deleteReview'
 
 // ACTIONS
 const readSpotReviews = reviews => {
@@ -10,13 +9,6 @@ const readSpotReviews = reviews => {
     reviews
   }
 }
-
-// const deleteReview = reviewId => {
-//   return {
-//     type: DELETE_REVIEW_BY_ID,
-//     reviewId
-//   }
-// }
 
 // ACTION THUNK MIDDLEWARE
 export const getSpotReviews = spotId => async dispatch => {

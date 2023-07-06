@@ -16,16 +16,16 @@ export default function ManageSpots () {
     dispatch(spotActions.getAllSpots())
   }, [dispatch])
 
-  const currentSpots = []
-  if (allSpots.length) {
-    currentSpots.push(allSpots.find(spot => spot.ownerId === id))
+  if (allSpots.length > 1) {
+    var currentSpots = allSpots.filter((spot) => spot.ownerId === id)
   }
 
+  console.log("CURRENT SPOTS => ", currentSpots)
   return (
     <>
       <div className='manage-spots header'>
         <h3>Manage Your Spots</h3>
-        <button>Create a New Spot</button>
+        <button onClick={() => history.push("/spots/new")}>Create a New Spot</button>
       </div>
       <div className='landing-page landing-page-container'>
         {currentSpots?.map(
@@ -62,10 +62,12 @@ export default function ManageSpots () {
                   </button>
                 </span>
                 <span>
+                  <button>
                   <OpenModalMenuItem
                     itemText='Delete'
                     modalComponent={<DeleteSpotModal id={id} />}
                   />
+                  </button>
                 </span>
               </div>
             </>

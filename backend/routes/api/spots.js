@@ -249,14 +249,14 @@ router.post(
       return next(err)
     }
 
-    const findReviewsBySpotId = await Review.findOne({
+    const getSpotBySpotId = await Spot.findOne({
       where: {
-        spotId
+        id: spotId
       }
     })
 
     // If provided spotId is not found respond with 404 error
-    if (!findReviewsBySpotId) {
+    if (!getSpotBySpotId) {
       const err = new Error("Spot couldn't be found")
       err.status = 404
       return next(err)
@@ -308,8 +308,14 @@ router.get('/:spotId/reviews', async (req, res, next) => {
     ]
   })
 
+  const getSpotById = await Spot.findOne({
+    where: {
+      id: spotId
+    }
+  })
+
   // If provided spotId is not found respond with 404 error
-  if (findReviewsBySpotId.length < 1) {
+  if (!getSpotById) {
     const err = new Error("Spot couldn't be found")
     err.status = 404
     return next(err)
@@ -750,7 +756,7 @@ router.get('/', validateQueryFilters, async (req, res, next) => {
       },
       attributes: ['url']
 		})
-		
+
 		if (!previewImage) {
 			spot.previewImage = null
 		} else {

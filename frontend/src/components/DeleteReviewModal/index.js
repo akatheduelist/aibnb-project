@@ -7,7 +7,7 @@ export default function DeleteReviewModal({ review }) {
   const dispatch = useDispatch()
   const [errors, setErrors] = useState({})
   const { closeModal } = useModal()
-  console.log("DELETE REVIEW MODAL => ", review.spotId)
+
   const handleSubmit = (e) => {
     e.preventDefault()
     setErrors({})
@@ -17,7 +17,6 @@ export default function DeleteReviewModal({ review }) {
     .then(closeModal)
     .catch(async res => {
       const data = await res.json()
-      console.log("DELETE REVIEW DATA => ", data)
       if (data && data.errors) {
         setErrors(error)
       }
