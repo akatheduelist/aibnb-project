@@ -18,7 +18,7 @@ export default function SpotDetail () {
   const [spotOwner, setSpotOwner] = useState(null)
   const [defaultImage, setDefaultImage] = useState('')
   const [noReviews, setNoReviews] = useState(true)
-  const [starRating, setStarRating] = useState(0);
+  const [starRating, setStarRating] = useState(0)
   const {
     name,
     city,
@@ -78,12 +78,14 @@ export default function SpotDetail () {
 
   // NO REVIEWS YET?
   useEffect(() => {
-    !reviewsBySpotId.length ? setNoReviews(true) : setNoReviews(false);
+    !reviewsBySpotId.length ? setNoReviews(true) : setNoReviews(false)
   })
 
   // UPDATE STAR RATING
   useEffect(() => {
-    (avgStarRating > 1 || avgStarRating < 5) ? setStarRating(avgStarRating) : setStarRating(0)
+    avgStarRating > 1 || avgStarRating < 5
+      ? setStarRating(avgStarRating)
+      : setStarRating(0)
   })
 
   return (
@@ -106,78 +108,83 @@ export default function SpotDetail () {
               <p>{descriptions}</p>
             </div>
             <div className='spot-reservation'>
-              <div>
-                <span className="bold" >{`$${price}`}</span><span> night</span>
-                <span>
-                  <i className='fa-solid fa-star' />
-                  {` ${starRating !== 0 ? starRating : 'New'}`}
-                </span>
-                {reviewsBySpotId.length >= 1 ? (
-                  <>
-                    <span>&#183;</span>
-                    <span>
-                      {reviewsBySpotId.length === 1
-                        ? `1 Review`
-                        : `${reviewsBySpotId.length} Reviews`}
-                    </span>
-                  </>
-                ) : null}
+              <div className='spot-price'>
+                <div>
+                  <span className='bold'>{`$${price}`}</span>
+                  <span className="small medium"> night</span>
+                </div>
+                <div>
+                  <span className="small medium">
+                    <i className='fa-solid fa-star' />
+                    {` ${starRating !== 0 ? starRating : 'New'}`}
+                  </span>
+                  {reviewsBySpotId.length >= 1 ? (
+                    <>
+                      <span className="mid-dot medium">&#183;</span>
+                      <span className="small medium">
+                        {reviewsBySpotId.length === 1
+                          ? `1 Review`
+                          : `${reviewsBySpotId.length} Reviews`}
+                      </span>
+                    </>
+                  ) : null}
+                </div>
               </div>
               <div>
-                <button className="red-bg medium" onClick={e => window.alert('Feature coming soon')}>
+                <button
+                  className='red-button medium'
+                  onClick={e => window.alert('Feature coming soon')}
+                >
                   Reserve
                 </button>
               </div>
             </div>
           </div>
+          <hr />
         </div>
-      </div>
-
-      <hr />
-
-      <div className='spot-footer'>
-        <span>
-          <i className='fa-solid fa-star' />
-          {` ${starRating !== 0 ? starRating : 'New'}`}
-        </span>
-        <span>&#183;</span>
-        <span>
-          {reviewsBySpotId.length === 1
-            ? `1 Review`
-            : `${reviewsBySpotId.length} Reviews`}
-        </span>
-      </div>
-      <div>
-        {reviewable ? (
-          <button>
-            <OpenModalMenuItem
-              itemText='Post Your Review'
-              modalComponent={<PostReviewModal spotId={spotId} />}
-            />
-          </button>
-        ) : null}
-        {noReviews ? (<h1>Be the first to post a review</h1>) : null}
-      </div>
-
-      <div>
-        <h1>Reviews</h1>
-        {reviewsBySpotId?.toReversed().map(review => (
-          <div>
-            <h3>{review.User.firstName}</h3>
-            <div>{dateFormat(review.createdAt, "mmmm yyyy")}</div>
-            <div>{review.review}</div>
-            <div>
-              {loggedIn && review.userId === currentUser.id ? (
-                <button>
-                  <OpenModalMenuItem
-                    itemText='Delete'
-                    modalComponent={<DeleteReviewModal review={review} />}
-                  />
-                </button>
-              ) : null}
-            </div>
+        <div className='reviews-container details-container'>
+          <div className='spot-detail reviews-header bold'>
+            <span>
+              <i className='fa-solid fa-star' />
+              {` ${starRating !== 0 ? starRating : 'New'}`}
+            </span>
+            <span className="mid-dot bold">&#183;</span>
+            <span>
+              {reviewsBySpotId.length === 1
+                ? `1 Review`
+                : `${reviewsBySpotId.length} Reviews`}
+            </span>
           </div>
-        ))}
+          <div>
+            {reviewable ? (
+              <button>
+                <OpenModalMenuItem
+                  itemText='Post Your Review'
+                  modalComponent={<PostReviewModal spotId={spotId} />}
+                />
+              </button>
+            ) : null}
+            {noReviews ? <h1>Be the first to post a review</h1> : null}
+          </div>
+
+          {reviewsBySpotId?.toReversed().map(review => (
+            <div>
+              <h3>{review.User.firstName}</h3>
+              <div>{dateFormat(review.createdAt, 'mmmm yyyy')}</div>
+              <div>{review.review}</div>
+              <div>
+                {loggedIn && review.userId === currentUser.id ? (
+                  <button>
+                    <OpenModalMenuItem
+                      itemText='Delete'
+                      modalComponent={<DeleteReviewModal review={review} />}
+                    />
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </>
   )

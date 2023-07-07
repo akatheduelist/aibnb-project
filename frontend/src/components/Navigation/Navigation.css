@@ -6,7 +6,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1em 2em;
+    max-width: 72em;
+    padding: 1em 1em;
+    height: 68px;
     border-bottom: 1px solid #dddddd;
 }
 
@@ -26,8 +28,23 @@
     border: 1px solid #dddddd;
     border-radius: 30px;
     cursor: pointer;
+    z-index: 10;
 }
 
 .user-button:hover {
     box-shadow: 1px 3px 6px #dddddd;
+}
+
+.profile-dropdown {
+    /* display: flex;
+    flex-direction: column; */
+    border: 2px solid #222222;
+    border-radius: 3px;
+    background-color:#fffffe;
+    padding: .3em 1em;
+    width: 10em;
+    margin: .3em 0em;
+    position: absolute;
+    right: 1.3em;
+    list-style: none;
 }

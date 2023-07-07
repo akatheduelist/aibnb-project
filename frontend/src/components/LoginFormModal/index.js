@@ -38,7 +38,7 @@ function LoginFormModal() {
 
     return (
         <div className="login-form">
-                <h1>Log In</h1>
+                <h2>Log In</h2>
                 <form className="form-modal" onSubmit={handleSubmit}>
                     <label>
                         <input
@@ -64,14 +64,16 @@ function LoginFormModal() {
                     {errors.credential && (
                         <p>{errors.credential}</p>
                     )}
-                    <button type="submit" disabled={Object.keys(errors).length > 0}>Log In</button>
+                    <button className="red-button login-submit" type="submit" disabled={Object.keys(errors).length > 0}>Log In</button>
                     {errors.failure && (
                         <p>{errors.failure}</p>
-                    )}
-                    <button type="submit" onClick={() => {
+                )}
+                <div>
+                    <button className="link-button medium login-submit" type="submit" onClick={() => {
                         setCredential("Demo-lition");
                         setPassword("password");
                     }}>Log in as Demo User</button>
+                </div>
                 </form >
             </div>
     );

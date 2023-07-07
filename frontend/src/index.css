@@ -1,6 +1,11 @@
 * {
   color: #222222;
   font-family: 'Manrope', sans-serif;
+  box-sizing: border-box;
+}
+
+ul {
+  list-style: none;
 }
 
 button:hover {
@@ -9,14 +14,29 @@ button:hover {
 
 .red-button {
   background-color: #ff5b5f;
-  width: 20em;
-  height: 3em;
+  width: 220px;
+  height: 35px;
   border: 2px solid #222222;
   border-radius: 3px;
   color: #ffffffee;
+  font-size: small;
+  cursor: pointer;
 }
+
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .hidden {
   display: none;
+}
+
+.small {
+  font-size: small;
 }
 
 .regular {
@@ -29,6 +49,10 @@ button:hover {
 
 .bold {
   font-weight: 700;
+}
+
+.mid-dot {
+  margin: 0 .3em;
 }
 
 .validation-errors {
@@ -46,6 +70,6 @@ button:hover {
   align-items: center;
   justify-content: center;
   /* border: 2px solid blue; */
-  margin: 1.6em auto;
+  padding: 1.6em 0em;
   max-width: 72em;
 }

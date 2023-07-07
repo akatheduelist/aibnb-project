@@ -45,7 +45,8 @@ function ProfileButton ({ user }) {
     history.push('/spots/current')
     closeMenu()
   }
-  const ulClassName = 'profile-dropdown' + (showMenu ? '' : ' hidden')
+  const ulClassName =
+    'profile-dropdown medium small' + (showMenu ? '' : ' hidden')
 
   return (
     <>
@@ -53,7 +54,7 @@ function ProfileButton ({ user }) {
         <i className='fa-sharp fa-solid fa-bars fa-lg' />
         <i className='fa-solid fa-circle-user fa-2xl' />
       </button>
-      <ul className={ulClassName} ref={ulRef}>
+      <div className={ulClassName} ref={ulRef}>
         {user ? (
           <>
             <div>{`Hello, ${user.firstName}`}</div>
@@ -68,18 +69,18 @@ function ProfileButton ({ user }) {
         ) : (
           <>
             <OpenModalMenuItem
-              itemText='Log In'
-              onItemClick={closeMenu}
-              modalComponent={<LoginFormModal />}
-            />
-            <OpenModalMenuItem
               itemText='Sign Up'
               onItemClick={closeMenu}
               modalComponent={<SignupFormModal />}
             />
+            <OpenModalMenuItem
+              itemText='Log In'
+              onItemClick={closeMenu}
+              modalComponent={<LoginFormModal />}
+            />
           </>
         )}
-      </ul>
+      </div>
     </>
   )
 }

@@ -1,5 +1,5 @@
 .details-container {
-  /* border: 2px solid pink; */
+  width: 90%;
 }
 
 h2 {
@@ -37,21 +37,35 @@ h2 {
 }
 
 .spot-description {
-  max-width: 65%;
+  width: 28em;
+}
+
+.spot-price {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 90%;
+  height: 25%
 }
 
 .spot-reservation {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
+  padding: 1em 0em;
   border: 2px solid #222222;
   border-radius: 12px;
-  width: 22em;
-  height: 7em;
+  width: 275px;
+  height: 105px;
 }
 
 .spot-images {
   width: 256px;
   height: 256px;
+}
+
+.reviews-header {
+  width: 100%;
+  margin: 1em auto;
 }
