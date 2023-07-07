@@ -19,7 +19,7 @@ export default function CreateSpot () {
   const [previewImageUrl, setPreviewImageUrl] = useState('')
   const [errors, setErrors] = useState({})
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const error = {}
 
@@ -40,7 +40,7 @@ export default function CreateSpot () {
     setErrors(error)
 
     if (!Object.keys(error).length) {
-      dispatch(
+      const res = await dispatch(
         spotActions.postSpot({
           country,
           address,
@@ -50,7 +50,8 @@ export default function CreateSpot () {
           title,
           price
         })
-      ).then(history.push("/spots/current"))
+      )
+      if (!res.error) history.push(`/spots/${res.id}`)
     }
 
     reset();

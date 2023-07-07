@@ -57,6 +57,7 @@ export const postSpot =
     if (res.ok) {
       const data = await res.json()
       dispatch(getAllSpots())
+      return data;
     }
   }
 

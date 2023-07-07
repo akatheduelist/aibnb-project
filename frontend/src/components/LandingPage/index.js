@@ -15,7 +15,7 @@ export default function LandingPage () {
 
   return (
     <>
-      <div className='landing-page landing-page-container'>
+      <div className='landing-page page-container'>
         {allSpots?.map(
           ({ id, name, city, state, avgRating, price, previewImage }) => (
             <>
@@ -25,7 +25,7 @@ export default function LandingPage () {
               >
                 <div>
                   <img
-                    className='card-img'
+                    className='image card-img'
                     src={previewImage}
                     title={name}
                     alt={name}

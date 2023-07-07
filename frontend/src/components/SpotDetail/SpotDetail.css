@@ -1,0 +1,57 @@
+.details-container {
+  /* border: 2px solid pink; */
+}
+
+h2 {
+  margin: .3em auto;
+}
+
+.spot-header {
+  margin: .9em auto;
+}
+.image-gallery {
+  /* border: 2px solid pink; */
+  width: 99%;
+  margin: auto;
+}
+
+.default-image {
+  width: 512px;
+  height: 512px;
+}
+
+.spot-images-container {
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  width: 120px;
+  height: 120px;
+}
+
+.spot-description-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 1em
+}
+
+.spot-description {
+  max-width: 65%;
+}
+
+.spot-reservation {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  border: 2px solid #222222;
+  border-radius: 12px;
+  width: 22em;
+  height: 7em;
+}
+
+.spot-images {
+  width: 256px;
+  height: 256px;
+}

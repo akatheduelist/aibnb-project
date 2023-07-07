@@ -6,6 +6,7 @@ import DeleteReviewModal from '../DeleteReviewModal'
 import PostReviewModal from '../PostReviewModal'
 import * as spotActions from '../../store/spot'
 import * as reviewActions from '../../store/review'
+import './SpotDetail.css'
 
 export default function SpotDetail () {
   const { spotId } = useParams()
@@ -14,6 +15,8 @@ export default function SpotDetail () {
   const [reviewedBefore, setReviewedBefore] = useState(null)
   const [reviewable, setReviewable] = useState(null)
   const [spotOwner, setSpotOwner] = useState(null)
+  const [defaultImage, setDefaultImage] = useState('')
+  const [reviewDate, setReviewDate] = useState('')
   const {
     name,
     city,
@@ -64,45 +67,57 @@ export default function SpotDetail () {
     console.log('REVIEWABLE => ', reviewable)
   })
 
+  useEffect(() => {
+    SpotImages.length
+      ? setDefaultImage(SpotImages?.find(image => image.preview === true).url)
+      : setDefaultImage('https://http.cat/404')
+    console.log('DEFAULT IMAGE => ', defaultImage)
+  })
+
   return (
     <>
-      <div className='spot-detail spot-detail-container'>
-        <div className='spot-header'>
-          <h3 className='spot-name'>{name}</h3>
-          <span className='spot-location'>{`${city}, ${state}, ${country}`}</span>
-        </div>
-        <div className='image-gallery'>
-          {SpotImages?.map(image => (
-            <img src={image.url}></img>
-          ))}
-        </div>
-        <div className='spot-description'>
-          <h3>{`Hosted By`}</h3>
-          <p>{descriptions}</p>
-        </div>
-        <div className='spot-reservation'>
-          <div>
-            <span>{`$${price} night`}</span>
-            // ==TODO== Newly posted review should update the star rating
-            <span>
-              <i className='fa-solid fa-star' />
-              {` ${avgStarRating !== 'NaN' ? avgStarRating : 'New'}`}
-            </span>
-            {reviewsBySpotId.length >= 1 ? (
-              <>
-                <span>&#183;</span>
-                <span>
-                  {reviewsBySpotId.length === 1
-                    ? `1 Review`
-                    : `${reviewsBySpotId.length} Reviews`}
-                </span>
-              </>
-            ) : null}
+      <div className='spot-detail page-container'>
+        <div className='spot-detail details-container'>
+          <div className='spot-header'>
+            <h2 className='spot-name'>{name}</h2>
+            <span className='spot-location medium'>{`${city}, ${state}, ${country}`}</span>
           </div>
-          <div>
-            <button onClick={e => window.alert('Feature coming soon')}>
-              Reserve
-            </button>
+          <div className='image-gallery'>
+            <img className='image default-image' src={defaultImage} />
+            {SpotImages?.map(image => (
+              <img className='image spot-images' src={image.url}></img>
+            ))}
+          </div>
+          <div className='spot-description-container'>
+            <div className='spot-description'>
+              <h2>{`Hosted By ${Owner.firstName} ${Owner.lastName}`}</h2>
+              <p>{descriptions}</p>
+            </div>
+            <div className='spot-reservation'>
+              <div>
+                <span className="bold" >{`$${price}`}</span><span> night</span>
+                {/* ==TODO== Newly posted review should update the star rating */}
+                <span>
+                  <i className='fa-solid fa-star' />
+                  {` ${avgStarRating !== 'NaN' ? avgStarRating : 'New'}`}
+                </span>
+                {reviewsBySpotId.length >= 1 ? (
+                  <>
+                    <span>&#183;</span>
+                    <span>
+                      {reviewsBySpotId.length === 1
+                        ? `1 Review`
+                        : `${reviewsBySpotId.length} Reviews`}
+                    </span>
+                  </>
+                ) : null}
+              </div>
+              <div>
+                <button className="red-bg medium" onClick={e => window.alert('Feature coming soon')}>
+                  Reserve
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -1,1 +1,54 @@
-/* TODO Add site wide styles */
+* {
+  color: #222222;
+  font-family: 'Manrope', sans-serif;
+}
+
+button {
+  width: 20em;
+  height: 3em;
+  border: 2px solid #222222;
+  border-radius: 3px;
+  color: #ffffffee;
+}
+
+button:hover {
+  box-shadow: 1px 3px 6px #dddddd;
+}
+
+.red-bg {
+  background-color: #ff5b5f
+}
+.hidden {
+  display: none;
+}
+
+.regular {
+  font-weight: 300;
+}
+
+.medium {
+  font-weight: 600;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.validation-errors {
+  color: red;
+}
+
+.image {
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.page-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  /* border: 2px solid blue; */
+  margin: 1.6em auto;
+  max-width: 72em;
+}
