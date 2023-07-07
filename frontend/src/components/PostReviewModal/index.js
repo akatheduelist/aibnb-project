@@ -18,7 +18,7 @@ export default function PostReviewModal () {
       error.review = 'Review must be more than 10 characters'
     if (!starRating) error.starRating = 'Star rating cannot be blank'
 
-    console.log('POST REVIEW ERRORS => ', error)
+    console.log('STAR RATING => ', starRating)
     setErrors(error)
   }, [review, starRating])
 
@@ -32,7 +32,7 @@ export default function PostReviewModal () {
         .catch(async res => {
           const data = await res.json()
           if (data && data.errors) {
-            console.log("SERVER ERROR!! => ", data.error)
+            console.log('SERVER ERROR!! => ', data.error)
             setErrors(data.errors)
           }
         })
@@ -55,13 +55,29 @@ export default function PostReviewModal () {
         <label>
           {/* <span className='validation-errors'>{errors.review}</span> */}
         </label>
-        <h2>* * * * * Stars</h2>
+        <div className='post-review star-rating'>
+          {[...Array(5)].map((star, idx) => {
+            idx += 1
+            return (
+              <button
+                type='button'
+                key={idx}
+                className={idx <= starRating ? 'on' : 'off'}
+                onClick={() => setStarRating(idx)}
+                onMouseEnter={() => setStarRating(idx)}
+                onMouseLeave={() => setStarRating(idx)}
+              >
+                <span className='star'>&#9733;</span>
+              </button>
+            )
+          })}
+        </div>
         <label>
-          {/* <span className='validation-errors'>{errors.stars}</span> */}
+          <span>{starRating}</span>
         </label>
-        // Submit button id disabled until there are 10 chars in comment box and
-        when no stars selected
-        <button type='submit' disabled={errors.review || errors.stars}>Submit Your Review</button>
+        <button type='submit' disabled={errors.review || errors.stars}>
+          Submit Your Review
+        </button>
       </form>
     </div>
   )
