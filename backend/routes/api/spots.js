@@ -712,7 +712,7 @@ router.get('/', validateQueryFilters, async (req, res, next) => {
   }
 
   let limit
-  if (size >= 1 && size <= 20) {
+  if (size >= 1 && size <= 100) {
     limit = size
   } else {
     limit = 20

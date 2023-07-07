@@ -25,24 +25,25 @@ export default function PostReviewModal ({spotId}) {
   // ==TODO== After modal closes and re-opens it should reset any errors, empty inputs, and button disabled
   const handleSubmit = e => {
     e.preventDefault()
+    setErrors({})
 
     if (!Object.keys(errors).length) {
       return dispatch(reviewActions.postReview({ review, starRating, spotId }))
-        .then(closeModal)
-        .catch(async res => {
-          const data = await res.json()
-          if (data && data.errors) {
-            console.log('SERVER ERROR!! => ', data.error)
-            setErrors(data.errors)
-          }
-        })
+      .catch(async (res) => {
+        const data = await res.json();
+        if (data && data.errors) {
+          setErrors(data.errors);
+        } else {
+          closeModal()
+        }
+      })
     }
   }
 
   return (
     <div className='delete-spot'>
       <h1>How was your stay?</h1>
-      // If a server error occurs show it under the title
+      {errors.length && errors}
       <form onSubmit={handleSubmit}>
         <textarea
           placeholder='Leave your review here...'

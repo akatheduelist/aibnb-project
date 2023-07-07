@@ -1,4 +1,5 @@
 import { csrfFetch } from "./csrf";
+import { getSpotById } from "./spot";
 
 const READ_REVIEWS_BY_SPOT_ID = 'review/readSpotReviews'
 
@@ -28,6 +29,8 @@ export const delReview = review => async dispatch => {
   if (res.ok) {
     const data = await res.json();
     dispatch(getSpotReviews(review.spotId))
+    dispatch(getSpotById(review.spotId))
+    return data;
   }
 }
 
@@ -42,7 +45,8 @@ export const postReview = ({ review, starRating, spotId }) => async dispatch => 
 
   if (res.ok) {
     const data = await res.json();
-    dispatch(getSpotReviews(spotId))
+    dispatch(getSpotReviews(data.spotId))
+    dispatch(getSpotById(data.spotId))
     return data;
   }
 }

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import * as spotActions from '../../store/spot'
 import OpenModalMenuItem from '../Navigation/OpenModalMenuItem'
@@ -11,21 +11,24 @@ export default function ManageSpots () {
   const dispatch = useDispatch()
   const allSpots = Object.values(useSelector(state => state.spots.allSpots))
   const { id } = useSelector(state => state.session.user)
+  const [ownerSpots, setOwnerSpots] = useState({})
 
   useEffect(() => {
     dispatch(spotActions.getAllSpots())
   }, [dispatch])
 
   if (allSpots.length > 1) {
-    var currentSpots = allSpots.filter((spot) => spot.ownerId === id)
+    var currentSpots = allSpots.filter(spot => spot.ownerId === id)
   }
 
-  console.log("CURRENT SPOTS => ", currentSpots)
+  console.log('CURRENT SPOTS => ', currentSpots)
   return (
     <>
       <div className='manage-spots header'>
         <h3>Manage Your Spots</h3>
-        <button onClick={() => history.push("/spots/new")}>Create a New Spot</button>
+        <button onClick={() => history.push('/spots/new')}>
+          Create a New Spot
+        </button>
       </div>
       <div className='landing-page landing-page-container'>
         {currentSpots?.map(
@@ -63,10 +66,10 @@ export default function ManageSpots () {
                 </span>
                 <span>
                   <button>
-                  <OpenModalMenuItem
-                    itemText='Delete'
-                    modalComponent={<DeleteSpotModal id={id} />}
-                  />
+                    <OpenModalMenuItem
+                      itemText='Delete'
+                      modalComponent={<DeleteSpotModal id={id} />}
+                    />
                   </button>
                 </span>
               </div>

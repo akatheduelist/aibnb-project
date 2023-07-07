@@ -18,7 +18,7 @@ export default function SpotDetail () {
   const [spotOwner, setSpotOwner] = useState(null)
   const [defaultImage, setDefaultImage] = useState('')
   const [noReviews, setNoReviews] = useState(true)
-  const [starRating, setStarRating] = useState(0)
+  const [starRating, setStarRating] = useState(0);
   const {
     name,
     city,
@@ -108,7 +108,6 @@ export default function SpotDetail () {
             <div className='spot-reservation'>
               <div>
                 <span className="bold" >{`$${price}`}</span><span> night</span>
-                {/* ==TODO== Newly posted review should update the star rating */}
                 <span>
                   <i className='fa-solid fa-star' />
                   {` ${starRating !== 0 ? starRating : 'New'}`}
@@ -137,7 +136,6 @@ export default function SpotDetail () {
       <hr />
 
       <div className='spot-footer'>
-        // ==TODO== Newly posted review should update the star rating
         <span>
           <i className='fa-solid fa-star' />
           {` ${starRating !== 0 ? starRating : 'New'}`}
@@ -163,7 +161,7 @@ export default function SpotDetail () {
 
       <div>
         <h1>Reviews</h1>
-        {reviewsBySpotId.toReversed().map(review => (
+        {reviewsBySpotId?.toReversed().map(review => (
           <div>
             <h3>{review.User.firstName}</h3>
             <div>{dateFormat(review.createdAt, "mmmm yyyy")}</div>

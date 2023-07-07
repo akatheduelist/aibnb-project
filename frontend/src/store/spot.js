@@ -20,11 +20,11 @@ const readSpotById = spot => {
 
 // ACTION THUNK MIDDLEWARE
 export const getAllSpots = () => async dispatch => {
-  const res = await fetch('/api/spots')
+  const res = await fetch('/api/spots?size=100&page=1')
 
   if (res.ok) {
     const data = await res.json()
-    return dispatch(readAllSpots(data.Spots))
+    dispatch(readAllSpots(data.Spots))
   }
 }
 export const getSpotById = spotId => async dispatch => {
@@ -56,7 +56,7 @@ export const postSpot =
 
     if (res.ok) {
       const data = await res.json()
-      dispatch(getAllSpots())
+      // dispatch(getAllSpots())
       return data;
     }
   }
