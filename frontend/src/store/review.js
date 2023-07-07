@@ -31,6 +31,21 @@ export const delReview = review => async dispatch => {
   }
 }
 
+export const postReview = ({ review, stars, spotId }) => async dispatch => {
+  const res = await csrfFetch(`/api/spots/${spotId}/reviews`, {
+    method: "POST",
+    body: JSON.stringify({
+      review,
+      stars
+    })
+  })
+
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(getSpotReviews(spotId))
+  }
+}
+
 // REDUCER
 const initialState = { spot: {} };
 

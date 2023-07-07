@@ -107,7 +107,7 @@ export const deleteSpot = spotId => async dispatch => {
 }
 
 // REDUCER
-const initialState = { allSpots: {}, singleSpot: { SpotImages: [] } }
+const initialState = { allSpots: {}, singleSpot: { Owner: {}, SpotImages: [] } }
 
 export default function spotReducer (state = initialState, action) {
   switch (action.type) {

@@ -53,7 +53,7 @@ export default function CreateSpot () {
       ).then(history.push("/spots/current"))
     }
 
-    // reset();
+    reset();
   }
 
   const reset = () => {
