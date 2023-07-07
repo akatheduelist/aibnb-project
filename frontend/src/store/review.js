@@ -31,18 +31,19 @@ export const delReview = review => async dispatch => {
   }
 }
 
-export const postReview = ({ review, stars, spotId }) => async dispatch => {
+export const postReview = ({ review, starRating, spotId }) => async dispatch => {
   const res = await csrfFetch(`/api/spots/${spotId}/reviews`, {
     method: "POST",
     body: JSON.stringify({
       review,
-      stars
+      stars: starRating
     })
   })
 
   if (res.ok) {
     const data = await res.json();
     dispatch(getSpotReviews(spotId))
+    return data;
   }
 }
 

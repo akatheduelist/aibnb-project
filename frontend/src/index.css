@@ -3,20 +3,17 @@
   font-family: 'Manrope', sans-serif;
 }
 
-button {
+button:hover {
+  box-shadow: 1px 3px 6px #dddddd;
+}
+
+.red-button {
+  background-color: #ff5b5f;
   width: 20em;
   height: 3em;
   border: 2px solid #222222;
   border-radius: 3px;
   color: #ffffffee;
-}
-
-button:hover {
-  box-shadow: 1px 3px 6px #dddddd;
-}
-
-.red-bg {
-  background-color: #ff5b5f
 }
 .hidden {
   display: none;

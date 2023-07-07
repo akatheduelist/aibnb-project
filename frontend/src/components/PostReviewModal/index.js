@@ -3,7 +3,7 @@ import * as reviewActions from '../../store/review'
 import { useDispatch } from 'react-redux'
 import { useModal } from '../../context/Modal'
 
-export default function PostReviewModal () {
+export default function PostReviewModal ({spotId}) {
   const dispatch = useDispatch()
   const [review, setReview] = useState('')
   const [starRating, setStarRating] = useState(0)
@@ -27,7 +27,7 @@ export default function PostReviewModal () {
     e.preventDefault()
 
     if (!Object.keys(errors).length) {
-      return dispatch(reviewActions.postReview(review))
+      return dispatch(reviewActions.postReview({ review, starRating, spotId }))
         .then(closeModal)
         .catch(async res => {
           const data = await res.json()
@@ -75,7 +75,7 @@ export default function PostReviewModal () {
         <label>
           <span>{starRating}</span>
         </label>
-        <button type='submit' disabled={errors.review || errors.stars}>
+        <button className="red-button" type='submit' disabled={errors.review || errors.stars}>
           Submit Your Review
         </button>
       </form>

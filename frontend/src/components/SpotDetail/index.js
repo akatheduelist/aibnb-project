@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import dateFormat from 'dateformat'
 import OpenModalMenuItem from '../Navigation/OpenModalMenuItem'
 import DeleteReviewModal from '../DeleteReviewModal'
 import PostReviewModal from '../PostReviewModal'
@@ -16,7 +17,8 @@ export default function SpotDetail () {
   const [reviewable, setReviewable] = useState(null)
   const [spotOwner, setSpotOwner] = useState(null)
   const [defaultImage, setDefaultImage] = useState('')
-  const [reviewDate, setReviewDate] = useState('')
+  const [noReviews, setNoReviews] = useState(true)
+  const [starRating, setStarRating] = useState(0)
   const {
     name,
     city,
@@ -67,11 +69,21 @@ export default function SpotDetail () {
     console.log('REVIEWABLE => ', reviewable)
   })
 
+  // SET DEFAULT IMAGE
   useEffect(() => {
     SpotImages.length
       ? setDefaultImage(SpotImages?.find(image => image.preview === true).url)
       : setDefaultImage('https://http.cat/404')
-    console.log('DEFAULT IMAGE => ', defaultImage)
+  })
+
+  // NO REVIEWS YET?
+  useEffect(() => {
+    !reviewsBySpotId.length ? setNoReviews(true) : setNoReviews(false);
+  })
+
+  // UPDATE STAR RATING
+  useEffect(() => {
+    (avgStarRating > 1 || avgStarRating < 5) ? setStarRating(avgStarRating) : setStarRating(0)
   })
 
   return (
@@ -99,7 +111,7 @@ export default function SpotDetail () {
                 {/* ==TODO== Newly posted review should update the star rating */}
                 <span>
                   <i className='fa-solid fa-star' />
-                  {` ${avgStarRating !== 'NaN' ? avgStarRating : 'New'}`}
+                  {` ${starRating !== 0 ? starRating : 'New'}`}
                 </span>
                 {reviewsBySpotId.length >= 1 ? (
                   <>
@@ -128,7 +140,7 @@ export default function SpotDetail () {
         // ==TODO== Newly posted review should update the star rating
         <span>
           <i className='fa-solid fa-star' />
-          {` ${avgStarRating !== 'NaN' ? avgStarRating : 'New'}`}
+          {` ${starRating !== 0 ? starRating : 'New'}`}
         </span>
         <span>&#183;</span>
         <span>
@@ -142,21 +154,19 @@ export default function SpotDetail () {
           <button>
             <OpenModalMenuItem
               itemText='Post Your Review'
-              modalComponent={<PostReviewModal />}
+              modalComponent={<PostReviewModal spotId={spotId} />}
             />
           </button>
         ) : null}
+        {noReviews ? (<h1>Be the first to post a review</h1>) : null}
       </div>
 
       <div>
         <h1>Reviews</h1>
-        // ==TODO== Newly posted reviews should show up at the top of the review
-        list
-        {reviewsBySpotId.map(review => (
+        {reviewsBySpotId.toReversed().map(review => (
           <div>
             <h3>{review.User.firstName}</h3>
-            // ==TODO== format date for review
-            <div>{review.createdAt}</div>
+            <div>{dateFormat(review.createdAt, "mmmm yyyy")}</div>
             <div>{review.review}</div>
             <div>
               {loggedIn && review.userId === currentUser.id ? (
