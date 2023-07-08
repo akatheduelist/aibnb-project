@@ -1,1 +1,17 @@
+.create-spot-container {
+  min-width: 23em;
+  max-width: 32em;
+}
 
+.create-spot-footer {
+  width: fit-content;
+  margin: auto;
+}
+
+.city {
+  width: 98%
+}
+
+.price {
+  width: 94%
+}

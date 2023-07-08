@@ -1,7 +1,3 @@
-.navigation {
-    color: #666666;
-}
-
 .navigation-container {
     display: flex;
     align-items: center;
@@ -10,11 +6,19 @@
     padding: 1em 1em;
     height: 68px;
     border-bottom: 1px solid #dddddd;
+    margin: 0 auto;
 }
 
 .logo {
     height: 43px;
     cursor: pointer;
+}
+
+.navigation-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 21%;
 }
 
 .user-button{
@@ -36,15 +40,14 @@
 }
 
 .profile-dropdown {
-    /* display: flex;
-    flex-direction: column; */
     border: 2px solid #222222;
     border-radius: 3px;
     background-color:#fffffe;
     padding: .3em 1em;
     width: 10em;
-    margin: .3em 0em;
+    margin: .2em auto;
     position: absolute;
-    right: 1.3em;
+    right: 1.5em;
     list-style: none;
+    text-align: center;
 }

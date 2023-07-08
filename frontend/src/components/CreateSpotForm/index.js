@@ -6,20 +6,19 @@ import './CreateSpot.css'
 
 export default function CreateSpot () {
   const dispatch = useDispatch()
-    const history = useHistory()
-    const allSpots = Object.values(useSelector(state => state.spots.allSpots))
+  const history = useHistory()
   const [country, setCountry] = useState('')
   const [address, setAddress] = useState('')
   const [city, setCity] = useState('')
   const [state, setState] = useState('')
   const [description, setDescription] = useState('')
   const [title, setTitle] = useState('')
-  const [price, setPrice] = useState(0)
+  const [price, setPrice] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [previewImageUrl, setPreviewImageUrl] = useState('')
   const [errors, setErrors] = useState({})
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault()
     const error = {}
 
@@ -33,11 +32,19 @@ export default function CreateSpot () {
     if (!price) error.price = 'Price is required'
     if (!previewImageUrl) error.previewImageUrl = 'Preview image is required'
 
-    // const validImgFormats = [".jpg", ".png", ".jpeg"]
-    // if (!imageUrl.slice(-4).toLowerCase().some(slice => image) || !imageUrl.slice(-4).toLowerCase().includes(".jpg")) error.imageUrl = "Image URL must end in .png, .jpg, or .jpeg";
+    // ==TODO== Check that urls have image format
+    // const validImgFormats = ['.jpg', '.png', '.jpeg']
+    // if (
+    //   !imageUrl
+    //     .slice(-4)
+    //     .toLowerCase()
+    //     .some(slice => image) ||
+    //   !imageUrl.slice(-4).toLowerCase().includes('.jpg')
+    // )
+    //   error.imageUrl = 'Image URL must end in .png, .jpg, or .jpeg'
 
-    console.log('Create new spot ERRORS => ', error)
-    setErrors(error)
+    // console.log('Create new spot ERRORS => ', error)
+    // setErrors(error)
 
     if (!Object.keys(error).length) {
       const res = await dispatch(
@@ -54,7 +61,7 @@ export default function CreateSpot () {
       if (!res.error) history.push(`/spots/${res.id}`)
     }
 
-    reset();
+    reset()
   }
 
   const reset = () => {
@@ -69,71 +76,83 @@ export default function CreateSpot () {
     setImageUrl('')
   }
   return (
-    <div className='create-spot create-spot-container'>
-      <div className='create-spot header'>
+    <div className='page-container-column'>
+      <div className='create-spot-container'>
         <h2>Create a new Spot</h2>
         <h4>Where's your place located?</h4>
         <p>
           Guest will only get your exact address once they have booked a
           reservation.
         </p>
-      </div>
-      <div className='create-spot form'>
-        <form onSubmit={handleSubmit}>
+
+        <form className='create-spot-form' onSubmit={handleSubmit}>
           {/* Country */}
           <label>
-            Country <span className='validation-errors'>{errors.country}</span>
+            <span className='small medium'>Country</span>
+            &nbsp;&nbsp;
+            <span className='small medium validation-errors'>
+              {errors.country}
+            </span>
+            <input
+              type='text'
+              placeholder='Country'
+              name='country'
+              value={country}
+              onChange={e => setCountry(e.target.value)}
+            />
           </label>
-          <input
-            type='text'
-            placeholder='Country'
-            name='country'
-            value={country}
-            onChange={e => setCountry(e.target.value)}
-          />
-
           {/* Street Address */}
           <label>
-            Address <span className='validation-errors'>{errors.address}</span>
+            <span className='small medium'>Address</span>
+            &nbsp;&nbsp;
+            <span className='small medium validation-errors'>
+              {errors.address}
+            </span>
+            <input
+              type='text'
+              placeholder='Address'
+              name='address'
+              value={address}
+              onChange={e => setAddress(e.target.value)}
+            />
           </label>
-          <input
-            type='text'
-            placeholder='Address'
-            name='address'
-            value={address}
-            onChange={e => setAddress(e.target.value)}
-          />
-
           {/* City */}
-          <label>
-            City <span className='validation-errors'>{errors.city}</span>
-          </label>
-          <input
-            type='text'
-            placeholder='City'
-            name='city'
-            value={city}
-            onChange={e => setCity(e.target.value)}
-          />
-
           {/* State */}
-          <label>
-            State <span className='validation-errors'>{errors.state}</span>
-          </label>
-          <input
-            type='text'
-            placeholder='STATE'
-            name='state'
-            value={state}
-            onChange={e => setState(e.target.value)}
-          />
-
+          <div className='side-by-side'>
+            <label className='city'>
+              <span className='small medium'>City</span>
+              &nbsp;&nbsp;
+              <span className='small medium validation-errors'>
+                {errors.city}
+              </span>
+              <input
+                type='text'
+                placeholder='City'
+                name='city'
+                value={city}
+                onChange={e => setCity(e.target.value)}
+              />
+            </label>
+            <label>
+              <span className='small medium'>State</span>
+              &nbsp;&nbsp;
+              <span className='small medium validation-errors'>
+                {errors.state}
+              </span>
+              <input
+                type='text'
+                placeholder='STATE'
+                name='state'
+                value={state}
+                onChange={e => setState(e.target.value)}
+              />
+            </label>
+          </div>
           <hr />
-
           {/* Describe your place */}
           <h4>Describe your place to guests</h4>
-          <p>
-            mention the best features of your space, any special amenities like
+          <p className='small medium'>
+            Mention the best features of your space, any special amenities like
             fast wifi or parking, and what you love about the neighborhood.
           </p>
           <textarea
@@ -144,11 +163,11 @@ export default function CreateSpot () {
             onChange={e => setDescription(e.target.value)}
           ></textarea>
           <div>
-            <span className='validation-errors'>{errors.description}</span>
+            <span className='small medium validation-errors'>
+              {errors.description}
+            </span>
           </div>
-
           <hr />
-
           {/* Create a title */}
           <h4>Create a title for your spot</h4>
           <p>
@@ -163,30 +182,33 @@ export default function CreateSpot () {
             onChange={e => setTitle(e.target.value)}
           />
           <div>
-            <span className='validation-errors'>{errors.title}</span>
+            <span className='small medium validation-errors'>
+              {errors.title}
+            </span>
           </div>
-
           <hr />
-
           {/* Set a base price */}
           <h4>Set a base price for your spot</h4>
           <p>
             Competitive pricing can help your listing stand out and rank higher
             in search results.
           </p>
+          <span className='bold'>$</span>
+          &nbsp;&nbsp;
           <input
+            className='price'
             type='number'
-            placeholder='Price'
+            placeholder='Price per night (USD)'
             name='price'
             value={price}
             onChange={e => setPrice(e.target.value)}
           />
           <div>
-            <span className='validation-errors'>{errors.price}</span>
+            <span className='small medium validation-errors'>
+              {errors.price}
+            </span>
           </div>
-
           <hr />
-
           {/* Spot Photos */}
           <h4>Liven up your spot with photos</h4>
           <p>Submit a link to at least one photo to publish your spot.</p>
@@ -198,11 +220,10 @@ export default function CreateSpot () {
             onChange={e => setPreviewImageUrl(e.target.value)}
           />
           <div>
-            <span className='validation-errors'>
+            <span className='small medium validation-errors'>
               {errors.previewImageUrl || errors.imageUrl}
             </span>
           </div>
-
           <input
             type='url'
             placeholder='Image URL'
@@ -211,45 +232,49 @@ export default function CreateSpot () {
             onChange={e => setImageUrl(e.target.value)}
           />
           <div>
-            <span className='validation-errors'>{errors.imageUrl}</span>
+            <span className='small medium validation-errors'>
+              {errors.imageUrl}
+            </span>
           </div>
-
-          {/* <input
-                        type='url'
-                        placeholder='Image URL'
-                        name='imageUrl'
-                        value={imageUrl}
-                        onChange={(e) => setImageUrl(e.target.value)}
-                    />
-                    <div><span className="validation-errors">{errors.imageUrl}</span></div>
-
-                    <input
-                        type='url'
-                        placeholder='Image URL'
-                        name='imageUrl'
-                        value={imageUrl}
-                        onChange={(e) => setImageUrl(e.target.value)}
-                    />
-                    <div><span className="validation-errors">{errors.imageUrl}</span></div>
-
-                    <input
-                        type='url'
-                        placeholder='Image URL'
-                        name='imageUrl'
-                        value={imageUrl}
-                        onChange={(e) => setImageUrl(e.target.value)}
-                    />
-                    <div><span className="validation-errors">{errors.imageUrl}</span></div> */}
-
+          <input
+            type='url'
+            placeholder='Image URL'
+            name='imageUrl'
+            value={imageUrl}
+            onChange={e => setImageUrl(e.target.value)}
+          />
+          <div>
+            <span className='small medium validation-errors'>{errors.imageUrl}</span>
+          </div>
+          <input
+            type='url'
+            placeholder='Image URL'
+            name='imageUrl'
+            value={imageUrl}
+            onChange={e => setImageUrl(e.target.value)}
+          />
+          <div>
+            <span className='small medium validation-errors'>{errors.imageUrl}</span>
+          </div>
+          <input
+            type='url'
+            placeholder='Image URL'
+            name='imageUrl'
+            value={imageUrl}
+            onChange={e => setImageUrl(e.target.value)}
+          />
+          <div>
+            <span className='small medium validation-errors'>{errors.imageUrl}</span>
+          </div>
           <hr />
-
           {/* Submit Form */}
-          <button className='create-spot submit-button' type='submit'>
-            Create Spot
-          </button>
+          <div className='create-spot-footer'>
+            <button className='red-button-small' type='submit'>
+              Create Spot
+            </button>
+          </div>
         </form>
       </div>
-      <div className='create-spot footer'></div>
     </div>
   )
 }
