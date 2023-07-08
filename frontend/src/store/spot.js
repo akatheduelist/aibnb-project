@@ -2,6 +2,7 @@ import { csrfFetch } from './csrf'
 
 const READ_ALL_SPOTS = 'spot/getAllSpots'
 const READ_SPOT_BY_ID = 'spot/getSpotById'
+const RESET_SINGLE_SPOT = 'spot/resetSingleSpot'
 
 // ACTIONS
 const readAllSpots = spots => {
@@ -15,6 +16,12 @@ const readSpotById = spot => {
   return {
     type: READ_SPOT_BY_ID,
     spot
+  }
+}
+
+const resetSingleSpot = () => {
+  return {
+    type: RESET_SINGLE_SPOT
   }
 }
 
@@ -32,8 +39,12 @@ export const getSpotById = spotId => async dispatch => {
 
   if (res.ok) {
     const data = await res.json()
-    return dispatch(readSpotById(data))
+    dispatch(readSpotById(data))
   }
+}
+
+export const resetSpot = () => async dispatch => {
+  dispatch(resetSingleSpot())
 }
 
 export const postSpot =
@@ -124,6 +135,13 @@ export default function spotReducer (state = initialState, action) {
         ...state,
         allSpots: { ...state.allSpots },
         singleSpot: action.spot
+      }
+    }
+    case RESET_SINGLE_SPOT: {
+      return {
+        ...state,
+        allSpots: { ...state.allSpots },
+        singleSpot: {}
       }
     }
     default:

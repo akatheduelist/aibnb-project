@@ -31,11 +31,11 @@ function App () {
           <Route exact path='/spots/current'>
             <ManageSpots />
           </Route>
+          <Route exact path='/spots/:spotId/edit'>
+            <CreateSpot />
+          </Route>
           <Route exact path='/spots/:spotId'>
             <SpotDetail />
-          </Route>
-          <Route exact path='/spots/:spotId/edit'>
-            <UpdateSpot />
           </Route>
         </Switch>
       )}

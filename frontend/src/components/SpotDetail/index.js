@@ -155,16 +155,16 @@ export default function SpotDetail () {
                 : `${reviewsBySpotId.length} Reviews`}
             </span>
           </div>
-          <div>
+          <div className="post-review">
             {reviewable ? (
-              <button>
+              <button className="grey-button">
                 <OpenModalMenuItem
                   itemText='Post Your Review'
                   modalComponent={<PostReviewModal spotId={spotId} />}
                 />
               </button>
             ) : null}
-            {noReviews ? <h1>Be the first to post a review</h1> : null}
+            {noReviews ? <p className="standard medium">Be the first to post a review</p> : null}
           </div>
 
           {reviewsBySpotId?.toReversed().map(review => (
