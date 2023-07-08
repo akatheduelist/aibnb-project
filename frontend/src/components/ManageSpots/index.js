@@ -24,23 +24,23 @@ export default function ManageSpots () {
   console.log('CURRENT SPOTS => ', currentSpots)
   return (
     <>
-      <div className='manage-spots header'>
+      <div className='page-container'>
+      <div className='header'>
         <h3>Manage Your Spots</h3>
-        <button onClick={() => history.push('/spots/new')}>
+        <button className="grey-button" onClick={() => history.push('/spots/new')}>
           Create a New Spot
         </button>
       </div>
-      <div className='landing-page landing-page-container'>
         {currentSpots?.map(
           ({ id, name, city, state, avgRating, price, previewImage }) => (
             <>
               <div
-                className='landing-page card-container'
+                className='card-container'
                 onClick={e => history.push(`/spots/${id}`)}
               >
                 <div>
                   <img
-                    className='card-img'
+                    className='image card-img'
                     src={previewImage}
                     title={name}
                     alt={name}
@@ -57,21 +57,17 @@ export default function ManageSpots () {
                   <span className='medium'>{`$${price} `}</span>
                   <span>night</span>
                 </div>
-              </div>
-              <div className='card-update-delete'>
-                <span>
-                  <button onClick={e => history.push(`/spots/${id}/edit`)}>
-                    Update
-                  </button>
-                </span>
-                <span>
-                  <button>
+                <div className='card-update-delete'>
+                    <button className="grey-button" onClick={e => history.push(`/spots/${id}/edit`)}>
+                      Update
+                    </button>
+                    <button className="grey-button">
                     <OpenModalMenuItem
-                      itemText='Delete'
-                      modalComponent={<DeleteSpotModal id={id} />}
-                    />
-                  </button>
-                </span>
+                        itemText='Delete'
+                        modalComponent={<DeleteSpotModal id={id} />}
+                      />
+                    </button>
+                </div>
               </div>
             </>
           )

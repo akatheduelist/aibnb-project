@@ -8,6 +8,10 @@
   color: #477E8B;
 }
 
+a:hover {
+  cursor: pointer;
+}
+
 input {
   width: 98%;
   height: 26px;
@@ -25,8 +29,21 @@ textarea {
   margin: .5em auto;
 }
 
-ul {
+li {
   list-style: none;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+Link {
+  cursor: pointer;
+}
+
+button {
+  margin: auto .3em;
+  cursor: pointer;
 }
 
 button:hover {
@@ -43,6 +60,11 @@ p {
   font-weight: 600;
 }
 
+.header {
+  width: 100%;
+  padding: .5em;
+}
+
 .red-button {
   background-color: #ff5b5f;
   width: 220px;
@@ -51,7 +73,6 @@ p {
   border-radius: 3px;
   color: #fffffe;
   font-size: small;
-  cursor: pointer;
 }
 
 .red-button-small {
@@ -60,7 +81,6 @@ p {
   border-radius: 3px;
   color: #fffffe;
   font-size: small;
-  cursor: pointer;
 }
 
 .link-button {
@@ -68,7 +88,6 @@ p {
   border: none;
   padding: 0;
   text-decoration: underline;
-  cursor: pointer;
 }
 
 .oval-button {
@@ -79,8 +98,26 @@ p {
   padding: .4em .6em;
 }
 
+.grey-button {
+  background-color: #666666;
+  border: 2px solid #222222;
+  border-radius: 3px;
+  color: #fffffe;
+  font-size: small;
+  font-weight: 600;
+  height: 24px;
+}
+
+.grey-button span {
+  color: #fffffe;
+}
+
 .no-underline {
   text-decoration: none;
+}
+
+.align-left {
+  justify-content: flex-start;
 }
 
 .hidden {
@@ -126,8 +163,7 @@ p {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  padding: 1.6em 0em;
-  max-width: 72em;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
@@ -137,6 +173,44 @@ p {
   justify-content: center;
   flex-direction: column;
   padding: 1.6em 0em;
-  max-width: 72em;
+  max-width: 100px;
   /* border: 2px solid blue; */
+}
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0.7em 0.5em;
+  cursor: pointer;
+  width: 232px;
+  height: 342px;
+}
+
+.card-img {
+  width: 230px;
+  height: 220px;
+  margin-bottom: .5em;
+}
+
+.card-details {
+  display: flex;
+  justify-content: space-between;
+  height: 20%;
+  width: 100%;
+  margin-bottom: 0.5em;
+  font-size: .94em;
+}
+.avg-rating {
+  font-size: .92em;
+}
+
+.card-price {
+  width: 98%;
+  font-size: .94em;
+}
+
+.city-state {
+  max-width: 80%
 }

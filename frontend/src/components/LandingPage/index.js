@@ -16,6 +16,9 @@ export default function LandingPage () {
   return (
     <>
       <div className='landing-page page-container'>
+        <div className="header">
+
+        </div>
         {allSpots?.map(
           ({ id, name, city, state, avgRating, price, previewImage }) => (
             <>

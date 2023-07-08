@@ -6,6 +6,11 @@ h2 {
   margin: .3em auto;
 }
 
+.card-update-delete {
+  align-self: flex-start;
+  margin: .3em 0;
+}
+
 .spot-header {
   margin: .9em auto;
 }

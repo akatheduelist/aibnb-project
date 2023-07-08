@@ -2,9 +2,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 72em;
-    padding: 1em 1em;
-    height: 68px;
+    max-width: 1000px;
+    padding: 0 40px;
+    height: 80px;
     border-bottom: 1px solid #dddddd;
     margin: 0 auto;
 }
@@ -18,7 +18,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 21%;
+    width: 23%;
 }
 
 .user-button{
