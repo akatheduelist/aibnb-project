@@ -14,11 +14,11 @@ function LoginFormModal() {
     useEffect(() => {
         const error = {};
 
-        if (credential.length > 1 && credential.length < 4) error.credential = "Username must be longer than 4 characters.";
-        if (password.length > 1 && password.length < 6) error.password = "Password must be at least 6 characters.";
+        if (!credential.length || credential.length && credential.length < 4) error.credential = "Username must be longer than 4 characters.";
+        if (!password.length || password.length && password.length < 6) error.password = "Password must be at least 6 characters.";
 
         setErrors(error);
-    }, [credential, password]);
+    }, [password, credential]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -30,15 +30,21 @@ function LoginFormModal() {
             .catch(async (res) => {
                 const data = await res.json();
                 console.log("Log in User Data => ", data)
-                if (data && data.errors) {
-                    setErrors(error);
+                if (data && data.message) {
+                    error.failure = "The provided credentials were invalid"
+                    setErrors(error)
                 }
             });
     };
 
     return (
         <div className="login-form">
-                <h2>Log In</h2>
+            <h2>Log In</h2>
+            <div>
+            {errors.failure && (
+                        <span className="validation-errors small medium">{errors.failure}</span>
+                )}
+            </div>
                 <form className="form-modal" onSubmit={handleSubmit}>
                     <label>
                         <input
@@ -49,9 +55,6 @@ function LoginFormModal() {
                             required
                         />
                     </label>
-                    {errors.password && (
-                        <p>{errors.password}</p>
-                    )}
                     <label>
                         <input
                             type="password"
@@ -61,13 +64,7 @@ function LoginFormModal() {
                             required
                         />
                     </label>
-                    {errors.credential && (
-                        <p>{errors.credential}</p>
-                    )}
                     <button className="red-button login-submit" type="submit" disabled={Object.keys(errors).length > 0}>Log In</button>
-                    {errors.failure && (
-                        <p>{errors.failure}</p>
-                )}
                 <div>
                     <button className="link-button medium login-submit" type="submit" onClick={() => {
                         setCredential("Demo-lition");

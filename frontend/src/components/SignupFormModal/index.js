@@ -24,8 +24,8 @@ function SignupFormModal() {
             !lastName.length ||
             !password.length ||
             !confirmPassword.length) error.length = "Signup fields cannot be empty.";
-        if (username.length > 1 && username.length < 4) error.username = "Username field must be more than 4 characters."
-        if (password.length > 1 && password.length < 6) error.password = "Password cannot be fewer than 6 characters."
+        if (!username.length || username.length < 4) error.username = "Username field must be more than 4 characters."
+        if (!password.length || password.length < 6) error.password = "Password cannot be fewer than 6 characters."
         console.log("Sign Up useEffect Errors => ", error)
 
         setErrors(error)
@@ -34,7 +34,7 @@ function SignupFormModal() {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (password === confirmPassword) {
-            setErrors({});
+            const error = {}
 
             return dispatch(
                 sessionActions.signup({
@@ -49,8 +49,9 @@ function SignupFormModal() {
                 .catch(async (res) => {
                     const data = await res.json();
                     console.log("Sign Up User Data => ", data)
-                    if (data && data.errors) {
-                        setErrors(data.errors);
+                    if (data && data.message) {
+                        error.failure = Object.values(data.errors);
+                        setErrors(error)
                     }
                 });
         }
@@ -63,73 +64,82 @@ function SignupFormModal() {
         <>
             <div className="modal-container sign-up">
             <form className="login-form" onSubmit={handleSubmit}>
-            <h2>Sign Up</h2>
+                    <h2>Sign Up</h2>
+                    {errors.failure && (
+                        <span className="validation-errors small medium">{errors.failure}</span>
+                )}
                 <label>
-                    First Name
                     <input
                         type="text"
+                            name="firstName"
+                            placeholder="First Name"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                         required
                     />
                 </label>
                     <span className="validation-errors">
-                    {errors.firstName && <p>{errors.firstName}</p>}
+                    {/* {errors.firstName && <p>{errors.firstName}</p>} */}
                     </span>
                 <label>
-                    Last Name
                     <input
-                        type="text"
+                            type="text"
+                            name="firstName"
+                            placeholder="Last Name"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         required
                     />
                 </label>
-                {errors.lastName && <p>{errors.lastName}</p>}
+                {/* {errors.lastName && <p>{errors.lastName}</p>} */}
                 <label>
-                    Email
                     <input
-                        type="text"
+                            type="text"
+                            name="email"
+                            placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </label>
-                {errors.email && <p>{errors.email}</p>}
+                {/* {errors.email && <p>{errors.email}</p>} */}
                 <label>
-                    Username
                     <input
-                        type="text"
+                            type="text"
+                            name="username"
+                            placeholder="username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
                     />
                 </label>
-                {errors.username && <p>{errors.username}</p>}
+                {/* {errors.username && <p>{errors.username}</p>} */}
                 <label>
-                    Password
                     <input
-                        type="password"
+                            type="password"
+                            name="password"
+                            placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </label>
-                {errors.password && <p>{errors.password}</p>}
+                {/* {errors.password && <p>{errors.password}</p>} */}
                 <label>
-                    Confirm Password
                     <input
-                        type="password"
+                            type="password"
+                            name="confirmPassword"
+                            placeholder="Confirm Password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
                     />
                 </label>
-                {errors.confirmPassword && (
+                {/* {errors.confirmPassword && (
                     <p>{errors.confirmPassword}</p>
-                )}
+                )} */}
                 {console.log("Sign Up Errors => ", errors)}
-                <button className="red-button" type="submit" disabled={errors.length || errors.username || errors. password}>Sign Up</button>
+                <button className="red-button" type="submit" disabled={Object.keys(errors).length > 0}>Sign Up</button>
             </form>
             </div>
         </>
