@@ -16,12 +16,20 @@ export default function CreateSpot () {
   const [description, setDescription] = useState('')
   const [title, setTitle] = useState('')
   const [price, setPrice] = useState('')
-  const [imageUrl, setImageUrl] = useState([])
+  const [imageUrl, setImageUrl] = useState({})
   const [url, setUrl] = useState('')
   const [preview, setPreview] = useState(true)
   const [errors, setErrors] = useState({})
 
-  const handleSubmit = async (e) => {
+  const handleImages = e => {
+    setImageUrl(prevState => ({
+      ...prevState,
+      [e.target.name]: e.target.value
+    }))
+  }
+
+  const handleSubmit = async e => {
+    const validImgFormats = ['jpg', 'png', 'jpeg']
     e.preventDefault()
     const error = {}
 
@@ -36,18 +44,16 @@ export default function CreateSpot () {
     if (!url) error.previewImageUrl = 'Preview image is required'
 
     // ==TODO== Check that urls have image format
-    // const validImgFormats = ['.jpg', '.png', '.jpeg']
-    // if (
-    //   !imageUrl
-    //     .slice(-4)
-    //     .toLowerCase()
-    //     .some(slice => image) ||
-    //   !imageUrl.slice(-4).toLowerCase().includes('.jpg')
-    // )
-    //   error.imageUrl = 'Image URL must end in .png, .jpg, or .jpeg'
+    if (Object.keys(imageUrl).length || url.length) {
+      Object.values(imageUrl).forEach((image, idx) => {
+        const extension = image.toLowerCase().slice(-5).split('.')[1]
+        if (validImgFormats.includes(extension) === false) error.imageExtension = 'One or more image format incorrect. (.jpg, .jpeg, or .png)'
+      })
+      if (validImgFormats.includes(url.toLowerCase().slice(-5).split('.')[1]) === false) error.previewImageUrl = "Image format incorrect. (.jpg, .jpeg, or .png)"
+    }
 
-    // console.log('Create new spot ERRORS => ', error)
-    // setErrors(error)
+    console.log('Create new spot ERRORS => ', error)
+    setErrors(error)
 
     if (!Object.keys(error).length) {
       const res = await dispatch(
@@ -61,11 +67,12 @@ export default function CreateSpot () {
           price
         })
       )
-      const spotId = await res.id;
-      const imgRes = await dispatch(spotActions.postSpotImage({url,preview,spotId}))
+      const spotId = await res.id
+      const imgRes = await dispatch(
+        spotActions.postSpotImage({ url, preview, spotId })
+      )
       if (!res.errors && !imgRes.errors) history.push(`/spots/${res.id}`)
     }
-
     reset()
   }
 
@@ -83,7 +90,7 @@ export default function CreateSpot () {
 
   return (
     <>
-      {console.log('<== RETURN ==>', imageUrl)}
+      {console.log('<== RETURN ==>')}
       <div className='page-container-column'>
         <div className='create-spot-container'>
           <h2>Create a new Spot</h2>
@@ -239,49 +246,49 @@ export default function CreateSpot () {
             <input
               type='url'
               placeholder='Image URL'
-              name='imageUrl'
-              value={imageUrl}
-              onChange={e => setImageUrl([...imageUrl, e.target.value])}
+              name='image1'
+              value={imageUrl.image1}
+              onChange={handleImages}
             />
             <div>
               <span className='small medium validation-errors'>
-                {errors.imageUrl}
+                {errors.imageExtension}
               </span>
             </div>
             <input
               type='url'
               placeholder='Image URL'
-              name='imageUrl'
-              value={imageUrl}
-              onChange={e => setImageUrl(e.target.value)}
+              name='image2'
+              value={imageUrl.image2}
+              onChange={handleImages}
             />
             <div>
               <span className='small medium validation-errors'>
-                {errors.imageUrl}
+                {errors.imageExtension}
               </span>
             </div>
             <input
               type='url'
               placeholder='Image URL'
-              name='imageUrl'
-              value={imageUrl}
-              onChange={e => setImageUrl(e.target.value)}
+              name='image3'
+              value={imageUrl.image3}
+              onChange={handleImages}
             />
             <div>
               <span className='small medium validation-errors'>
-                {errors.imageUrl}
+                {errors.imageExtension}
               </span>
             </div>
             <input
               type='url'
               placeholder='Image URL'
-              name='imageUrl'
-              value={imageUrl}
-              onChange={e => setImageUrl(e.target.value)}
+              name='image4'
+              value={imageUrl.image4}
+              onChange={handleImages}
             />
             <div>
               <span className='small medium validation-errors'>
-                {errors.imageUrl}
+                {errors.imageExtension}
               </span>
             </div>
             <hr />
