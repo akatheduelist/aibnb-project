@@ -72,6 +72,21 @@ export const postSpot =
     }
   }
 
+export const postSpotImage = ({url, preview, spotId}) => async dispatch => {
+    const res = await csrfFetch(`/api/spots/${spotId}/images`, {
+      method: 'POST',
+      body: JSON.stringify({
+        url,
+        preview
+      })
+    })
+
+  if (res.ok) {
+    const data = await res.json();
+    return data;
+    }
+}
+
 export const putSpotById =
   ({
     id,

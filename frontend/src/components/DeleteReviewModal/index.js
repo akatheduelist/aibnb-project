@@ -24,11 +24,11 @@ export default function DeleteReviewModal({ review }) {
   }
 
   return (
-    <div className='delete-spot'>
-      <h1>Confirm Delete</h1>
+    <div className='modal-container delete-post'>
+      <h2>Confirm Delete</h2>
       <p>Are you sure you want to remove this review?</p>
-      <button onClick={handleSubmit}>Yes (Delete Review)</button>
-      <button onClick={closeModal}>No (Keep Review)</button>
+      <button className="red-button" onClick={handleSubmit}>Yes (Delete Review)</button>
+      <button className="grey-button-big" onClick={closeModal}>No (Keep Review)</button>
     </div>
   )
 }

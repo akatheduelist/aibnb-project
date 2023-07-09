@@ -29,41 +29,40 @@ export default function PostReviewModal ({spotId}) {
 
     if (!Object.keys(errors).length) {
       return dispatch(reviewActions.postReview({ review, starRating, spotId }))
+      .then(closeModal())
       .catch(async (res) => {
         const data = await res.json();
         if (data && data.errors) {
           setErrors(data.errors);
-        } else {
-          closeModal()
         }
       })
     }
   }
 
   return (
-    <div className='delete-spot'>
-      <h1>How was your stay?</h1>
-      {errors.length && errors}
+    <div className='modal-container'>
       <form onSubmit={handleSubmit}>
+      <h2>How was your stay?</h2>
+      {errors.length && errors}
         <textarea
           placeholder='Leave your review here...'
           name='review'
-          rows='4'
-          cols='50'
+          rows='8'
+          cols='40'
           value={review}
           onChange={e => setReview(e.target.value)}
         />
         <label>
-          {/* <span className='validation-errors'>{errors.review}</span> */}
+          <span className='medium validation-errors'>{errors.review}</span>
         </label>
-        <div className='post-review star-rating'>
+        <div className='star-rating'>
           {[...Array(5)].map((star, idx) => {
             idx += 1
             return (
               <button
                 type='button'
                 key={idx}
-                className={idx <= starRating ? 'on' : 'off'}
+                className={idx <= starRating ? 'red-button-small on' : 'off'}
                 onClick={() => setStarRating(idx)}
                 onMouseEnter={() => setStarRating(idx)}
                 onMouseLeave={() => setStarRating(idx)}
@@ -74,7 +73,7 @@ export default function PostReviewModal ({spotId}) {
           })}
         </div>
         <label>
-          <span>{starRating}</span>
+          {/* <span>{starRating}</span> */}
         </label>
         <button className="red-button" type='submit' disabled={errors.review || errors.stars}>
           Submit Your Review

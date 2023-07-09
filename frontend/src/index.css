@@ -75,6 +75,16 @@ p {
   font-size: small;
 }
 
+.grey-button-big {
+  background-color: #666666;
+  width: 220px;
+  height: 35px;
+  border: 2px solid #222222;
+  border-radius: 3px;
+  color: #fffffe;
+  font-size: small;
+}
+
 .red-button-small {
   background-color: #ff5b5f;
   border: 2px solid #222222;
@@ -206,6 +216,35 @@ p {
   margin-bottom: 0.5em;
   font-size: .94em;
 }
+
+.modal-container {
+  background-color: #fffffe;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  border-radius: 6px;
+  padding: 1em;
+}
+
+.modal-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 26em;
+  padding: 2em;
+}
+
+.delete-post {
+  height: 12em;
+}
+
+.star-rating .star{
+  font-size:large;
+  color: #222222;
+}
+
 .avg-rating {
   font-size: .92em;
 }

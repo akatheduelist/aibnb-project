@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import * as spotActions from '../../store/spot'
 import './CreateSpot.css'
 import { useParams } from 'react-router-dom'
@@ -8,32 +8,20 @@ import { useParams } from 'react-router-dom'
 export default function CreateSpot () {
   const dispatch = useDispatch()
   const history = useHistory()
-  const location = useLocation()
-  const { spotId } = useParams()
   const singleSpot = useSelector(state => state.spots.singleSpot)
-  const [country, setCountry] = useState('null')
+  const [country, setCountry] = useState('')
   const [address, setAddress] = useState('')
   const [city, setCity] = useState('')
   const [state, setState] = useState('')
   const [description, setDescription] = useState('')
   const [title, setTitle] = useState('')
   const [price, setPrice] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
-  const [previewImageUrl, setPreviewImageUrl] = useState('')
+  const [imageUrl, setImageUrl] = useState([])
+  const [url, setUrl] = useState('')
+  const [preview, setPreview] = useState(true)
   const [errors, setErrors] = useState({})
-  const [updateCountry, setUpdateCountry] = useState(null)
 
-  useEffect(() => {
-    console.log('CURRENT LOCATION, ', location.pathname)
-    // if (spotId === undefined) dispatch(spotActions.resetSpot())
-    if (spotId !== undefined) {
-      console.log(spotId)
-      // dispatch(spotActions.getSpotById(spotId));
-      // setUpdateCountry(singleSpot.country);
-    }
-  })
-
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const error = {}
 
@@ -45,7 +33,7 @@ export default function CreateSpot () {
       error.description = 'Description needs 30 or more characters'
     if (!title) error.title = 'Name is required'
     if (!price) error.price = 'Price is required'
-    if (!previewImageUrl) error.previewImageUrl = 'Preview image is required'
+    if (!url) error.previewImageUrl = 'Preview image is required'
 
     // ==TODO== Check that urls have image format
     // const validImgFormats = ['.jpg', '.png', '.jpeg']
@@ -73,7 +61,9 @@ export default function CreateSpot () {
           price
         })
       )
-      if (!res.error) history.push(`/spots/${res.id}`)
+      const spotId = await res.id;
+      const imgRes = await dispatch(spotActions.postSpotImage({url,preview,spotId}))
+      if (!res.errors && !imgRes.errors) history.push(`/spots/${res.id}`)
     }
 
     reset()
@@ -87,13 +77,13 @@ export default function CreateSpot () {
     setDescription('')
     setTitle('')
     setPrice(0)
-    setPreviewImageUrl('')
+    setUrl('')
     setImageUrl('')
   }
 
   return (
     <>
-      {console.log('<== RETURN ==>', updateCountry)}
+      {console.log('<== RETURN ==>', imageUrl)}
       <div className='page-container-column'>
         <div className='create-spot-container'>
           <h2>Create a new Spot</h2>
@@ -115,7 +105,7 @@ export default function CreateSpot () {
                 type='text'
                 placeholder='Country'
                 name='country'
-                value={country || updateCountry}
+                value={country}
                 onChange={e => setCountry(e.target.value)}
               />
             </label>
@@ -164,7 +154,7 @@ export default function CreateSpot () {
                   type='text'
                   placeholder='STATE'
                   name='state'
-                  value={spotId ? singleSpot.state : state}
+                  value={state}
                   onChange={e => setState(e.target.value)}
                 />
               </label>
@@ -181,7 +171,7 @@ export default function CreateSpot () {
               placeholder='Please write at least 30 characters'
               name='description'
               rows='10'
-              value={spotId ? singleSpot.descriptions : description}
+              value={description}
               onChange={e => setDescription(e.target.value)}
             ></textarea>
             <div>
@@ -200,7 +190,7 @@ export default function CreateSpot () {
               type='text'
               placeholder='title'
               name='title'
-              value={spotId ? singleSpot.name : title}
+              value={title}
               onChange={e => setTitle(e.target.value)}
             />
             <div>
@@ -222,7 +212,7 @@ export default function CreateSpot () {
               type='number'
               placeholder='Price per night (USD)'
               name='price'
-              value={spotId ? singleSpot.price : price}
+              value={price}
               onChange={e => setPrice(e.target.value)}
             />
             <div>
@@ -238,8 +228,8 @@ export default function CreateSpot () {
               type='url'
               placeholder='Preview image URL'
               name='previewImageUrl'
-              value={spotId ? singleSpot.previewUrl : previewImageUrl}
-              onChange={e => setPreviewImageUrl(e.target.value)}
+              value={url}
+              onChange={e => setUrl(e.target.value)}
             />
             <div>
               <span className='small medium validation-errors'>
@@ -251,7 +241,7 @@ export default function CreateSpot () {
               placeholder='Image URL'
               name='imageUrl'
               value={imageUrl}
-              onChange={e => setImageUrl(e.target.value)}
+              onChange={e => setImageUrl([...imageUrl, e.target.value])}
             />
             <div>
               <span className='small medium validation-errors'>

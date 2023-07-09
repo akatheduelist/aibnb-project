@@ -26,7 +26,7 @@ function DeleteSpotModal({ id }) {
     };
 
     return (
-        <div className="delete-spot">
+        <div className="">
         <h1>Confirm Delete</h1>
         <p>Are you sure you want to remove this spot from the listings?</p>
         <button onClick={handleSubmit}>Yes (Delete Spot)</button>

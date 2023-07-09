@@ -174,7 +174,7 @@ export default function SpotDetail () {
               <div>{review.review}</div>
               <div>
                 {loggedIn && review.userId === currentUser.id ? (
-                  <button>
+                  <button className="grey-button">
                     <OpenModalMenuItem
                       itemText='Delete'
                       modalComponent={<DeleteReviewModal review={review} />}
