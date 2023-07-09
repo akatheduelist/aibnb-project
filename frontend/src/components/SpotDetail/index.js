@@ -90,7 +90,6 @@ export default function SpotDetail () {
 
   return (
     <>
-      {console.log("<== RETURN ==>", defaultImage)}
       <div className='spot-detail page-container'>
         <div className='spot-detail details-container'>
           <div className='spot-header'>

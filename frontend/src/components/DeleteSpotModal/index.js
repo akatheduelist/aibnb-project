@@ -13,7 +13,6 @@ function DeleteSpotModal({ id }) {
         setErrors({});
         const error = {};
 
-        console.log("DELETE SPOT BUTTON => ", id)
         return dispatch(spotActions.deleteSpot(id))
           .then(closeModal)
             .catch(async (res) => {
@@ -26,11 +25,11 @@ function DeleteSpotModal({ id }) {
     };
 
     return (
-        <div className="">
-        <h1>Confirm Delete</h1>
+        <div className="modal-container delete-post">
+        <h2>Confirm Delete</h2>
         <p>Are you sure you want to remove this spot from the listings?</p>
-        <button onClick={handleSubmit}>Yes (Delete Spot)</button>
-        <button onClick={closeModal}>No (Keep Spot)</button>
+        <button className="red-button" onClick={handleSubmit}>Yes (Delete Spot)</button>
+        <button className="grey-button-big" onClick={closeModal}>No (Keep Spot)</button>
         </div>
     );
 }

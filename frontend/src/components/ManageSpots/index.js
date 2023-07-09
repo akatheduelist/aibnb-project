@@ -69,7 +69,7 @@ export default function ManageSpots () {
                   >
                     Update
                   </button>
-                  <button className='grey-button'>
+                  <button className='grey-button' onClick={e => e.stopPropagation()}>
                     <OpenModalMenuItem
                       itemText='Delete'
                       modalComponent={<DeleteSpotModal id={id} />}

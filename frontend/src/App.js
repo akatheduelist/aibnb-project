@@ -7,7 +7,6 @@ import CreateSpot from './components/CreateSpotForm'
 import LandingPage from './components/LandingPage'
 import SpotDetail from './components/SpotDetail'
 import ManageSpots from './components/ManageSpots'
-import UpdateSpot from './components/UpdateSpotForm'
 
 function App () {
   const dispatch = useDispatch()

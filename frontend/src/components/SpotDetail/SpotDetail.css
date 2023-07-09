@@ -1,31 +1,36 @@
-.details-container {
-  width: 90%;
+h2 {
+  margin: 0.3em auto;
 }
 
-h2 {
-  margin: .3em auto;
+.image-gallery {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-column-gap: 4px;
+  grid-row-gap: 4px;
+}
+
+.default-image {
+  width: 31em;
+  grid-area: 1 / 1 / 3 / 2;
+}
+
+.spot-images {
+  width: 15em;
 }
 
 .card-update-delete {
   align-self: flex-start;
-  margin: .3em 0;
+  margin: 0.3em 0;
 }
 
 .spot-header {
-  margin: .9em auto;
-}
-.image-gallery {
-  /* border: 2px solid pink; */
-  width: 99%;
-  margin: auto;
+  margin: 0.9em auto;
 }
 
-.default-image {
-  width: 512px;
-  height: 512px;
-}
-
-.spot-images-container {
+/* .spot-images-container {
   display: grid;
   width: 100vw;
   height: 100vh;
@@ -33,12 +38,12 @@ h2 {
   grid-template-rows: repeat(4, 1fr);
   width: 120px;
   height: 120px;
-}
+} */
 
 .spot-description-container {
   display: flex;
   justify-content: space-between;
-  padding: 1em
+  padding: 1em;
 }
 
 .spot-description {
@@ -50,7 +55,7 @@ h2 {
   justify-content: space-around;
   align-items: center;
   width: 90%;
-  height: 25%
+  height: 25%;
 }
 
 .spot-reservation {
@@ -65,13 +70,8 @@ h2 {
   height: 105px;
 }
 
-.spot-images {
-  width: 256px;
-  height: 256px;
-}
 
 .reviews-header {
   width: 100%;
   margin: 1em auto;
 }
-

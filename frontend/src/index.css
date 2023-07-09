@@ -237,7 +237,8 @@ p {
 }
 
 .delete-post {
-  height: 12em;
+  height: 13em;
+  width: 18em;
 }
 
 .star-rating .star{

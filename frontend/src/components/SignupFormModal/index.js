@@ -61,8 +61,9 @@ function SignupFormModal() {
 
     return (
         <>
-            <h1>Sign Up</h1>
-            <form onSubmit={handleSubmit}>
+            <div className="modal-container sign-up">
+            <form className="login-form" onSubmit={handleSubmit}>
+            <h2>Sign Up</h2>
                 <label>
                     First Name
                     <input
@@ -72,7 +73,9 @@ function SignupFormModal() {
                         required
                     />
                 </label>
-                {errors.firstName && <p>{errors.firstName}</p>}
+                    <span className="validation-errors">
+                    {errors.firstName && <p>{errors.firstName}</p>}
+                    </span>
                 <label>
                     Last Name
                     <input
@@ -126,8 +129,9 @@ function SignupFormModal() {
                     <p>{errors.confirmPassword}</p>
                 )}
                 {console.log("Sign Up Errors => ", errors)}
-                <button type="submit" disabled={errors.length || errors.username || errors. password}>Sign Up</button>
+                <button className="red-button" type="submit" disabled={errors.length || errors.username || errors. password}>Sign Up</button>
             </form>
+            </div>
         </>
     );
 }
