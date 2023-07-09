@@ -60,7 +60,7 @@ module.exports = {
       },
       {
         ownerId: 2,
-        address: "",
+        address: "987 Mountain View Drive",
         city: "Banff",
         state: "Alberta",
         country: "Canada",

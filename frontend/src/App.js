@@ -32,7 +32,7 @@ function App () {
             <ManageSpots />
           </Route>
           <Route exact path='/spots/:spotId/edit'>
-            <CreateSpot />
+            <CreateSpot isEdit={true} />
           </Route>
           <Route exact path='/spots/:spotId'>
             <SpotDetail />

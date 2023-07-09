@@ -40,6 +40,7 @@ export const getSpotById = spotId => async dispatch => {
   if (res.ok) {
     const data = await res.json()
     dispatch(readSpotById(data))
+    return data;
   }
 }
 
@@ -89,27 +90,25 @@ export const postSpotImage = ({url, preview, spotId}) => async dispatch => {
 
 export const putSpotById =
   ({
-    id,
+    spotId,
     country,
     address,
     city,
     state,
-    lat,
-    lng,
     description,
     title,
     price
   }) =>
   async dispatch => {
-    const res = await csrfFetch(`/api/spots/${id}`, {
+    const res = await csrfFetch(`/api/spots/${spotId}`, {
       method: 'PUT',
       body: JSON.stringify({
         country,
         address,
         city,
         state,
-        lat,
-        lng,
+        lat: '-33.85660618894459',
+        lng: '151.21529669767847',
         description,
         name: title,
         price

@@ -5,9 +5,10 @@ import * as spotActions from '../../store/spot'
 import './CreateSpot.css'
 import { useParams } from 'react-router-dom'
 
-export default function CreateSpot () {
+export default function CreateSpot ({ isEdit }) {
   const dispatch = useDispatch()
   const history = useHistory()
+  const { spotId } = useParams()
   const singleSpot = useSelector(state => state.spots.singleSpot)
   const [country, setCountry] = useState('')
   const [address, setAddress] = useState('')
@@ -20,6 +21,23 @@ export default function CreateSpot () {
   const [url, setUrl] = useState('')
   const [preview, setPreview] = useState(true)
   const [errors, setErrors] = useState({})
+
+  useEffect(() => {
+    if (isEdit)
+      (async () => {
+        const spot = await dispatch(spotActions.getSpotById(spotId))
+        console.log("address", spot.address)
+        setCountry(spot.country)
+        setAddress(spot.address)
+        setCity(spot.city)
+        setState(spot.state)
+        setDescription(spot.descriptions)
+        setTitle(spot.name)
+        setPrice(spot.price)
+        setUrl(spot.SpotImages.filter(image => image.preview === true)[0].url)
+      })()
+    if (!isEdit) reset()
+  }, [isEdit])
 
   const handleImages = e => {
     setImageUrl(prevState => ({
@@ -47,15 +65,21 @@ export default function CreateSpot () {
     if (Object.keys(imageUrl).length || url.length) {
       Object.values(imageUrl).forEach((image, idx) => {
         const extension = image.toLowerCase().slice(-5).split('.')[1]
-        if (validImgFormats.includes(extension) === false) error.imageExtension = 'One or more image format incorrect. (.jpg, .jpeg, or .png)'
+        if (validImgFormats.includes(extension) === false)
+          error.imageExtension =
+            'One or more image format incorrect. (.jpg, .jpeg, or .png)'
       })
-      if (validImgFormats.includes(url.toLowerCase().slice(-5).split('.')[1]) === false) error.previewImageUrl = "Image format incorrect. (.jpg, .jpeg, or .png)"
+      if (
+        validImgFormats.includes(url.toLowerCase().slice(-5).split('.')[1]) ===
+        false
+      )
+        error.previewImageUrl = 'Image format incorrect. (.jpg, .jpeg, or .png)'
     }
 
-    console.log('Create new spot ERRORS => ', error)
+    console.log('Create new spot ERRORS => ', spotId)
     setErrors(error)
 
-    if (!Object.keys(error).length) {
+    if (!isEdit && !Object.keys(error).length) {
       const res = await dispatch(
         spotActions.postSpot({
           country,
@@ -72,8 +96,25 @@ export default function CreateSpot () {
         spotActions.postSpotImage({ url, preview, spotId })
       )
       if (!res.errors && !imgRes.errors) history.push(`/spots/${res.id}`)
+      reset()
     }
-    reset()
+
+    if (isEdit && !Object.keys(error).length) {
+      const res = await dispatch(
+        spotActions.putSpotById({
+          spotId,
+          country,
+          address,
+          city,
+          state,
+          description,
+          title,
+          price
+        })
+      )
+      if (!res.errors) history.push(`/spots/${res.id}`)
+      reset()
+    }
   }
 
   const reset = () => {
@@ -90,7 +131,7 @@ export default function CreateSpot () {
 
   return (
     <>
-      {console.log('<== RETURN ==>')}
+      {console.log('<== RETURN ==>', isEdit)}
       <div className='page-container-column'>
         <div className='create-spot-container'>
           <h2>Create a new Spot</h2>
@@ -117,9 +158,6 @@ export default function CreateSpot () {
               />
             </label>
             {/* Street Address */}
-            {address.length < 1 && singleSpot.address
-              ? setAddress(singleSpot.address)
-              : null}
             <label>
               <span className='small medium'>Address</span>
               &nbsp;&nbsp;
