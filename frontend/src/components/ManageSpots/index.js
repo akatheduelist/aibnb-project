@@ -11,13 +11,15 @@ export default function ManageSpots () {
   const dispatch = useDispatch()
   const allSpots = Object.values(useSelector(state => state.spots.allSpots))
   const currentUser = useSelector(state => state.session.user)
+  const [currentSpots, setCurrentSpots] = useState([])
 
   useEffect(() => {
     dispatch(spotActions.getAllSpots())
   }, [dispatch])
 
   if (allSpots.length > 1) {
-    var currentSpots = allSpots.filter(spot => spot.ownerId === currentUser.id)
+    const spotFilter = allSpots.filter(spot => spot.ownerId === currentUser.id)
+    setCurrentSpots(spotFilter)
   }
 
   return (
@@ -25,12 +27,14 @@ export default function ManageSpots () {
       <div className='page-container'>
         <div className='header'>
           <h3>Manage Your Spots</h3>
-          {currentSpots.length <= 1 ? <button
-            className='grey-button'
-            onClick={() => history.push('/spots/new')}
-          >
-            Create a New Spot
-          </button> : null}
+          {currentSpots.length <= 1 ? (
+            <button
+              className='grey-button'
+              onClick={() => history.push('/spots/new')}
+            >
+              Create a New Spot
+            </button>
+          ) : null}
         </div>
         {currentSpots?.map(
           ({ id, name, city, state, avgRating, price, previewImage }) => (
@@ -68,7 +72,10 @@ export default function ManageSpots () {
                   >
                     Update
                   </button>
-                  <button className='grey-button' onClick={e => e.stopPropagation()}>
+                  <button
+                    className='grey-button'
+                    onClick={e => e.stopPropagation()}
+                  >
                     <OpenModalMenuItem
                       itemText='Delete'
                       modalComponent={<DeleteSpotModal id={id} />}
