@@ -26,7 +26,6 @@ function SignupFormModal() {
             !confirmPassword.length) error.length = "Signup fields cannot be empty.";
         if (!username.length || username.length < 4) error.username = "Username field must be more than 4 characters."
         if (!password.length || password.length < 6) error.password = "Password cannot be fewer than 6 characters."
-        console.log("Sign Up useEffect Errors => ", error)
 
         setErrors(error)
     }, [email, username, firstName, lastName, password, confirmPassword]);
@@ -48,7 +47,6 @@ function SignupFormModal() {
                 .then(closeModal)
                 .catch(async (res) => {
                     const data = await res.json();
-                    console.log("Sign Up User Data => ", data)
                     if (data && data.message) {
                         error.failure = Object.values(data.errors);
                         setErrors(error)
@@ -138,7 +136,6 @@ function SignupFormModal() {
                 {/* {errors.confirmPassword && (
                     <p>{errors.confirmPassword}</p>
                 )} */}
-                {console.log("Sign Up Errors => ", errors)}
                 <button className="red-button" type="submit" disabled={Object.keys(errors).length > 0}>Sign Up</button>
             </form>
             </div>

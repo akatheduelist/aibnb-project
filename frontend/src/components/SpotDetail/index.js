@@ -66,7 +66,6 @@ export default function SpotDetail () {
     } else {
       setReviewable(false)
     }
-    console.log('REVIEWABLE => ', reviewable)
   })
 
   // SET DEFAULT IMAGE
@@ -148,12 +147,16 @@ export default function SpotDetail () {
               <i className='fa-solid fa-star' />
               {` ${starRating !== 0 ? starRating : 'New'}`}
             </span>
+            {reviewsBySpotId.length === 0 ? null :
+              <>
             <span className="mid-dot bold">&#183;</span>
             <span>
               {reviewsBySpotId.length === 1
                 ? `1 Review`
                 : `${reviewsBySpotId.length} Reviews`}
             </span>
+              </>
+            }
           </div>
           <div className="post-review">
             {reviewable ? (

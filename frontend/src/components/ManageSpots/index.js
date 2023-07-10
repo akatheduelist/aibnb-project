@@ -20,18 +20,17 @@ export default function ManageSpots () {
     var currentSpots = allSpots.filter(spot => spot.ownerId === currentUser.id)
   }
 
-  console.log('CURRENT SPOTS => ', currentSpots)
   return (
     <>
       <div className='page-container'>
         <div className='header'>
           <h3>Manage Your Spots</h3>
-          <button
+          {currentSpots.length <= 1 ? <button
             className='grey-button'
             onClick={() => history.push('/spots/new')}
           >
             Create a New Spot
-          </button>
+          </button> : null}
         </div>
         {currentSpots?.map(
           ({ id, name, city, state, avgRating, price, previewImage }) => (

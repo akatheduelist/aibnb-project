@@ -26,7 +26,6 @@ export default function CreateSpot ({ isEdit }) {
     if (isEdit)
       (async () => {
         const spot = await dispatch(spotActions.getSpotById(spotId))
-        console.log("address", spot.address)
         setCountry(spot.country)
         setAddress(spot.address)
         setCity(spot.city)
@@ -76,7 +75,6 @@ export default function CreateSpot ({ isEdit }) {
         error.previewImageUrl = 'Image format incorrect. (.jpg, .jpeg, or .png)'
     }
 
-    console.log('Create new spot ERRORS => ', spotId)
     setErrors(error)
 
     if (!isEdit && !Object.keys(error).length) {
@@ -131,7 +129,6 @@ export default function CreateSpot ({ isEdit }) {
 
   return (
     <>
-      {console.log('<== RETURN ==>', isEdit)}
       <div className='page-container-column'>
         <div className='create-spot-container'>
           <h2>Create a new Spot</h2>

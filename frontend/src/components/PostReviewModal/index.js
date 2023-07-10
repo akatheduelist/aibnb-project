@@ -18,22 +18,22 @@ export default function PostReviewModal ({spotId}) {
       error.review = 'Review must be more than 10 characters'
     if (!starRating) error.starRating = 'Star rating cannot be blank'
 
-    console.log('STAR RATING => ', starRating)
     setErrors(error)
   }, [review, starRating])
 
   // ==TODO== After modal closes and re-opens it should reset any errors, empty inputs, and button disabled
   const handleSubmit = e => {
     e.preventDefault()
-    setErrors({})
+    const error = {}
 
     if (!Object.keys(errors).length) {
       return dispatch(reviewActions.postReview({ review, starRating, spotId }))
       .then(closeModal())
       .catch(async (res) => {
         const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
+        if (data && data.message) {
+          error.failure = data.errors
+          setErrors(error);
         }
       })
     }
