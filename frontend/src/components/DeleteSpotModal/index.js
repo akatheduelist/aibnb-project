@@ -17,7 +17,6 @@ function DeleteSpotModal({ id }) {
           .then(closeModal)
             .catch(async (res) => {
                 const data = await res.json();
-                console.log("DELETE SPOT Data => ", data)
                 if (data && data.errors) {
                     setErrors(error);
                 }
