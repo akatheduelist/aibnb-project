@@ -66,7 +66,7 @@ function LoginFormModal() {
                     <button className="red-button login-submit" type="submit" disabled={Object.keys(errors).length > 0}>Log In</button>
                 <div>
                     <button className="link-button medium login-submit" type="submit" onClick={() => {
-                        setCredential("Demo-lition");
+                        setCredential("Demo-Lition");
                         setPassword("password");
                     }}>Log in as Demo User</button>
                 </div>
