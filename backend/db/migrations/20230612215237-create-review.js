@@ -34,7 +34,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       review: {
-        type: Sequelize.TEXT
+        type: Sequelize.STRING
       },
       stars: {
         type: Sequelize.INTEGER
