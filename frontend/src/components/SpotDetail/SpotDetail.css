@@ -66,8 +66,8 @@ h2 {
   padding: 1em 0em;
   border: 2px solid #222222;
   border-radius: 12px;
-  width: 275px;
-  height: 105px;
+  min-width: 275px;
+  min-height: 105px;
 }
 
 
