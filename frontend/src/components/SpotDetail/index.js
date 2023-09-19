@@ -5,13 +5,15 @@ import dateFormat from 'dateformat'
 import OpenModalMenuItem from '../Navigation/OpenModalMenuItem'
 import DeleteReviewModal from '../DeleteReviewModal'
 import PostReviewModal from '../PostReviewModal'
+import SpotReservation from './SpotReservation/SpotReservation'
 import * as spotActions from '../../store/spot'
 import * as reviewActions from '../../store/review'
 import './SpotDetail.css'
 
 export default function SpotDetail () {
-  const { spotId } = useParams()
   const dispatch = useDispatch()
+  const { spotId } = useParams()
+  const sessionUser = useSelector(state => state.session.user)
   const [loggedIn, setLoggedIn] = useState(null)
   const [reviewedBefore, setReviewedBefore] = useState(null)
   const [reviewable, setReviewable] = useState(null)
@@ -110,17 +112,17 @@ export default function SpotDetail () {
               <div className='spot-price'>
                 <div>
                   <span className='bold'>{`$${price}`}</span>
-                  <span className="small medium"> night</span>
+                  <span className='small medium'> night</span>
                 </div>
                 <div>
-                  <span className="small medium">
+                  <span className='small medium'>
                     <i className='fa-solid fa-star' />
                     {` ${starRating !== 0 ? starRating : 'New'}`}
                   </span>
                   {reviewsBySpotId.length >= 1 ? (
                     <>
-                      <span className="mid-dot medium">&#183;</span>
-                      <span className="small medium">
+                      <span className='mid-dot medium'>&#183;</span>
+                      <span className='small medium'>
                         {reviewsBySpotId.length === 1
                           ? `1 Review`
                           : `${reviewsBySpotId.length} Reviews`}
@@ -129,6 +131,7 @@ export default function SpotDetail () {
                   ) : null}
                 </div>
               </div>
+              <SpotReservation userId={sessionUser.id} spotId={parseInt(spotId)} />
               <div>
                 <button
                   className='red-button medium'
@@ -147,27 +150,29 @@ export default function SpotDetail () {
               <i className='fa-solid fa-star' />
               {` ${starRating !== 0 ? starRating : 'New'}`}
             </span>
-            {reviewsBySpotId.length === 0 ? null :
+            {reviewsBySpotId.length === 0 ? null : (
               <>
-            <span className="mid-dot bold">&#183;</span>
-            <span>
-              {reviewsBySpotId.length === 1
-                ? `1 Review`
-                : `${reviewsBySpotId.length} Reviews`}
-            </span>
+                <span className='mid-dot bold'>&#183;</span>
+                <span>
+                  {reviewsBySpotId.length === 1
+                    ? `1 Review`
+                    : `${reviewsBySpotId.length} Reviews`}
+                </span>
               </>
-            }
+            )}
           </div>
-          <div className="post-review">
+          <div className='post-review'>
             {reviewable ? (
-              <button className="grey-button">
+              <button className='grey-button'>
                 <OpenModalMenuItem
                   itemText='Post Your Review'
                   modalComponent={<PostReviewModal spotId={spotId} />}
                 />
               </button>
             ) : null}
-            {noReviews ? <p className="standard medium">Be the first to post a review</p> : null}
+            {noReviews ? (
+              <p className='standard medium'>Be the first to post a review</p>
+            ) : null}
           </div>
 
           {reviewsBySpotId?.toReversed().map(review => (
@@ -177,7 +182,7 @@ export default function SpotDetail () {
               <div>{review.review}</div>
               <div>
                 {loggedIn && review.userId === currentUser.id ? (
-                  <button className="grey-button">
+                  <button className='grey-button'>
                     <OpenModalMenuItem
                       itemText='Delete'
                       modalComponent={<DeleteReviewModal review={review} />}
