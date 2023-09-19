@@ -45,6 +45,13 @@ function ProfileButton ({ user }) {
     history.push('/spots/current')
     closeMenu()
   }
+
+  const manageTrips = e => {
+    e.preventDefault()
+    history.push('/trips')
+    closeMenu()
+  }
+
   const ulClassName =
     'profile-dropdown medium small' + (showMenu ? '' : ' hidden')
 
@@ -61,6 +68,7 @@ function ProfileButton ({ user }) {
             <div>{user.email}</div>
             <hr />
             <button className="link-button no-underline small medium" onClick={manageSpots}>Manage Spots</button>
+            <button className="link-button no-underline small medium" onClick={manageTrips}>Trips</button>
             <hr />
             <div>
               <button className="oval-button" onClick={logout}>Log Out</button>

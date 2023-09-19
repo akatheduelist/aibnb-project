@@ -22,20 +22,20 @@ export default function SpotReservation ({ spotId, userId }) {
     // setErrors(error)
 
     // DISPATCH RESERVATION TO ACTION THUNK
-    return dispatch(spotActions.postSpotBooking({ startDate, endDate, guests, spotId }))
-    .catch(async (res) => {
-        const data = await res.json();
-        if (data && data.message) {
-            setErrors(data.message)
-            window.alert(data.message)
-        }
-    });
+    return dispatch(
+      spotActions.postSpotBooking({ startDate, endDate, guests, spotId })
+    ).catch(async res => {
+      const data = await res.json()
+      if (data && data.message) {
+        setErrors(data.message)
+        window.alert(data.message)
+      }
+    })
   }
 
   return (
     <>
       <div className='spot-reservation-container'>
-        SpotReservation
         <div className='spot-reservation-content'>
           <form className='spot-reservation-form' onSubmit={handleSubmit}>
             <label className='tiny bold'>
@@ -71,7 +71,14 @@ export default function SpotReservation ({ spotId, userId }) {
                 })}
               </select>
             </label>
-            <button type='submit'>Check availability</button>
+            <div>
+              {/* <button className='red-button medium' type='submit'>Check availability</button> */}
+              <button
+                className='red-button medium'
+                type="submit">
+                Reserve
+              </button>
+            </div>
           </form>
         </div>
       </div>

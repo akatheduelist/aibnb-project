@@ -7,6 +7,7 @@ import CreateSpot from './components/CreateSpotForm'
 import LandingPage from './components/LandingPage'
 import SpotDetail from './components/SpotDetail'
 import ManageSpots from './components/ManageSpots'
+import TripsPage from './components/TripsPage'
 
 function App () {
   const dispatch = useDispatch()
@@ -34,6 +35,9 @@ function App () {
           </Route>
           <Route exact path='/spots/:spotId'>
             <SpotDetail />
+          </Route>
+          <Route exact path='/trips'>
+            <TripsPage />
           </Route>
         </Switch>
       )}
