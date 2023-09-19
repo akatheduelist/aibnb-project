@@ -33,6 +33,7 @@
     "sequelize-values": "^1.1.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
     "dotenv-cli": "^7.2.1",
     "nodemon": "^2.0.22",
     "sqlite3": "^5.1.6"

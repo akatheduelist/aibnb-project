@@ -1,5 +1,8 @@
 'use strict';
 
+const { faker } = require("@faker-js/faker");
+const { User } = require("../models")
+
 let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
@@ -9,9 +12,12 @@ if (process.env.NODE_ENV === 'production') {
 module.exports = {
   async up (queryInterface, Sequelize) {
     options.tableName = 'Spots';
+    const ids = await User.findAll({
+        attributes: ['id']
+    })
     await queryInterface.bulkInsert(options,[
       {
-        ownerId: 1,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "123 Ocean View Drive",
         city: "Laguna Beach",
         state: "California",
@@ -23,7 +29,7 @@ module.exports = {
         price: 250
       },
       {
-        ownerId: 2,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "456 Forest Way",
         city: "Black Forest",
         state: "Bavaria",
@@ -35,7 +41,7 @@ module.exports = {
         price: 180
       },
       {
-        ownerId: 3,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "789 Sunset Avenue",
         city: "Santorini",
         state: "Santorini",
@@ -47,7 +53,7 @@ module.exports = {
         price: 300
       },
       {
-        ownerId: 1,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "321 Lagoon Road",
         city: "Bora Bora",
         state: "Bora Bora",
@@ -59,7 +65,7 @@ module.exports = {
         price: 500
       },
       {
-        ownerId: 2,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "987 Mountain View Drive",
         city: "Banff",
         state: "Alberta",
@@ -70,7 +76,7 @@ module.exports = {
         description: "Cozy up in a rustic cabin nestled in the Canadian Rockies, offering breathtaking mountain vistas.",
         price: 220
       },{
-        ownerId: 3,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "654 Palm Street",
         city: "Tulum",
         state: "Quintana Roo",
@@ -82,7 +88,7 @@ module.exports = {
         price: 180
       },
       {
-        ownerId: 1,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "321 Lakeview Terrace",
         city: "Queenstown",
         state: "Queenstown",
@@ -94,7 +100,7 @@ module.exports = {
         price: 300
       },
       {
-        ownerId: 2,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "123 Sahara Street",
         city: "Marrakech",
         state: "Marrakech",
@@ -106,7 +112,7 @@ module.exports = {
         price: 150
       },
       {
-        ownerId: 3,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "987 Coral Way",
         city: "Maldives",
         state: "Maldives",
@@ -118,7 +124,7 @@ module.exports = {
         price: 600
       },
       {
-        ownerId: 1,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "456 Alpine Street",
         city: "Zermatt",
         state: "Valais",
@@ -130,7 +136,7 @@ module.exports = {
         price: 400
       },
       {
-        ownerId: 2,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "789 Sandy Beach Road",
         city: "Byron Bay",
         state: "NSW",
@@ -142,7 +148,7 @@ module.exports = {
         price: 250
       },
       {
-        ownerId: 3,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "321 Zen Garden Lane",
         city: "Kyoto",
         state: "Kyoto",
@@ -154,7 +160,7 @@ module.exports = {
         price: 300
       },
       {
-        ownerId: 1,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "123 Safari Trail, , ",
         city: "Maasai Mara",
         state: "Maasai Mara",
@@ -166,7 +172,7 @@ module.exports = {
         price: 350
       },
       {
-        ownerId: 2,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "456 Snowy Way",
         city: "Aspen",
         state: "Colorado",
@@ -178,7 +184,7 @@ module.exports = {
         price: 280
       },
       {
-        ownerId: 3,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "789 Paradise Avenue",
         city: "Phuket",
         state: "Phuket",
@@ -190,7 +196,7 @@ module.exports = {
         price: 400
       },
       {
-        ownerId: 1,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "987 Rainforest Road",
         city: "Amazonas",
         state: "Amazonas",
@@ -202,7 +208,7 @@ module.exports = {
         price: 200
       },
       {
-        ownerId: 2,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "123 Castle Road",
         city: "Dublin",
         state: "Dublin",
@@ -214,7 +220,7 @@ module.exports = {
         price: 350
       },
       {
-        ownerId: 3,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "456 Lakeside Drive",
         city: "Queenstown",
         state: "Queenstown",
@@ -226,7 +232,7 @@ module.exports = {
         price: 280
       },
       {
-        ownerId: 1,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "789 Hidden Gem Lane",
         city: "Cornwall",
         state: "England",
@@ -238,7 +244,7 @@ module.exports = {
         price: 180
       },
       {
-        ownerId: 2,
+        ownerID: faker.number.int({ min: 1, max: ids.length }),
         address: "321 Urban Oasis Street",
         city: "Tokyo",
         state: "Tokyo",
