@@ -132,14 +132,6 @@ export default function SpotDetail () {
                 </div>
               </div>
               <SpotReservation userId={sessionUser.id} spotId={parseInt(spotId)} />
-              <div>
-                <button
-                  className='red-button medium'
-                  onClick={e => window.alert('Feature coming soon')}
-                >
-                  Reserve
-                </button>
-              </div>
             </div>
           </div>
           <hr />

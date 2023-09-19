@@ -68,6 +68,7 @@ const sessionReducer = (state = initialState, action) => {
     let newState;
     switch (action.type) {
         case SET_USER:
+            console.log("SETUSER")
             newState = Object.assign({}, state);
             newState.user = action.payload;
             return newState;
