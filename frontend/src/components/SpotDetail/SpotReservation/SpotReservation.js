@@ -1,45 +1,35 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import * as reservationActions from '../../../store/reservation'
+import * as spotActions from '../../../store/spot'
 import './SpotReservation.css'
 
 export default function SpotReservation ({ spotId, userId }) {
   const dispatch = useDispatch()
-  const [checkin, setCheckin] = useState(new Date())
-  const [checkout, setCheckout] = useState(new Date())
+  const [startDate, setStartDate] = useState(new Date())
+  const [endDate, setEndDate] = useState(new Date())
   const [guests, setGuests] = useState(1)
   const [errors, setErrors] = useState({})
 
   // RESERVATION FORM SUBMITED
-  const handleSubmit = async e => {
+  const handleSubmit = e => {
     e.preventDefault()
-    
+
     // FRONT END ERROR HANDLING
     const error = {}
-    if (!checkin) error.country = 'Check-in date is required'
-    if (!checkout) error.address = 'Checkout date is required'
-    if (!guests) error.city = 'Guest is required'
-    setErrors(errors)
-    console.log("ERRORS", errors)
-    if (!Object.keys(errors).length) {
-    //   const res = await dispatch(
-    //     reservationActions.postReservation({
-    //       checkin,
-    //       checkout,
-    //       guests,
-    //       spotId,
-    //       userId
-    //     })
-    //   )
-    //   if (!res.errors) setErrors(res.errors)
-    console.log({
-        checkin,
-        checkout,
-        guests,
-        spotId,
-        userId
-      })
-    }
+    // if (!startDate) error.country = 'Check-in date is required'
+    // if (!endDate) error.address = 'Checkout date is required'
+    // if (!guests) error.city = 'Guest is required'
+    // setErrors(error)
+
+    // DISPATCH RESERVATION TO ACTION THUNK
+    return dispatch(spotActions.postSpotBooking({ startDate, endDate, guests, spotId }))
+    .catch(async (res) => {
+        const data = await res.json();
+        if (data && data.message) {
+            setErrors(data.message)
+            window.alert(data.message)
+        }
+    });
   }
 
   return (
@@ -53,9 +43,9 @@ export default function SpotReservation ({ spotId, userId }) {
               <input
                 type='date'
                 placeholder='Add date'
-                name='checkin'
-                value={checkin}
-                onChange={e => setCheckin(e.target.value)}
+                name='startDate'
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
               />
             </label>
             <label className='tiny bold'>
@@ -63,16 +53,21 @@ export default function SpotReservation ({ spotId, userId }) {
               <input
                 type='date'
                 placeholder='Add date'
-                name='checkout'
-                value={checkout}
-                onChange={e => setCheckout(e.target.value)}
+                name='endDate'
+                value={endDate}
+                onChange={e => setEndDate(e.target.value)}
               />
             </label>
             <label className='tiny bold'>
               GUESTS
               <select value={guests} onChange={e => setGuests(e.target.value)}>
                 {[...Array(8)].map((guest, idx) => {
-                  return <option value={idx + 1} key={idx}>{idx + 1}</option>
+                  const numOfGuests = idx++
+                  return (
+                    <option value={numOfGuests} key={idx}>
+                      {numOfGuests}
+                    </option>
+                  )
                 })}
               </select>
             </label>

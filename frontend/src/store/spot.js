@@ -40,7 +40,7 @@ export const getSpotById = spotId => async dispatch => {
   if (res.ok) {
     const data = await res.json()
     dispatch(readSpotById(data))
-    return data;
+    return data
   }
 }
 
@@ -69,11 +69,13 @@ export const postSpot =
     if (res.ok) {
       const data = await res.json()
       // dispatch(getAllSpots())
-      return data;
+      return data
     }
   }
 
-export const postSpotImage = ({url, preview, spotId}) => async dispatch => {
+export const postSpotImage =
+  ({ url, preview, spotId }) =>
+  async dispatch => {
     const res = await csrfFetch(`/api/spots/${spotId}/images`, {
       method: 'POST',
       body: JSON.stringify({
@@ -82,23 +84,34 @@ export const postSpotImage = ({url, preview, spotId}) => async dispatch => {
       })
     })
 
-  if (res.ok) {
-    const data = await res.json();
-    return data;
+    if (res.ok) {
+      const data = await res.json()
+      return data
     }
-}
+  }
+
+export const postSpotBooking =
+  ({ startDate, endDate, userId, guests, spotId }) =>
+  async dispatch => {
+    const res = await csrfFetch(`/api/spots/${spotId}/bookings`, {
+      method: 'POST',
+      body: JSON.stringify({
+        startDate,
+        endDate,
+        spotId
+      })
+    })
+
+    if (res.ok) {
+      const data = await res.json()
+      return data
+    } else {
+      return res
+    }
+  }
 
 export const putSpotById =
-  ({
-    spotId,
-    country,
-    address,
-    city,
-    state,
-    description,
-    title,
-    price
-  }) =>
+  ({ spotId, country, address, city, state, description, title, price }) =>
   async dispatch => {
     const res = await csrfFetch(`/api/spots/${spotId}`, {
       method: 'PUT',
