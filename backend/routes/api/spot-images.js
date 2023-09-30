@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { singleFileUpload, singleMulterUpload } = require("../../awsS3");
 
 // Import models used by router
 const { SpotImage, Spot } = require("../../db/models");
