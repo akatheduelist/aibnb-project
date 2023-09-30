@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { Op } = require('sequelize')
+const { singleFileUpload, singleMulterUpload } = require('../../awsS3')
 
 // Import models used by router
 const {
@@ -73,8 +74,13 @@ const validateNewBooking = [
     .isDate()
     .custom(async (value, { req }) => {
       const startDate = new Date(req.body.startDate)
-      const endDate = new Date(value)
+      const endDate = new Date(req.body.endDate)
+      const currentDate = new Date()
 
+      if (startDate < currentDate)
+        throw new Error('startDate cannot be in the past')
+      if (endDate < currentDate)
+        throw new Error('endDate cannot be in the past')
       if (startDate >= endDate) {
         throw new Error('endDate cannot be on or before startDate')
       }
@@ -82,7 +88,7 @@ const validateNewBooking = [
   handleValidationErrors
 ]
 
-// Create a Booking from a Spot based on the Spot's id
+// Create a Booking for a Spot based on the Spot's id
 router.post(
   '/:spotId/bookings',
   [requireAuth, validateNewBooking],
@@ -109,45 +115,37 @@ router.post(
       return next(err)
     }
 
-    // Error response: Can't edit a booking that's past the end date
-    // const endBookingDate = new Date(endDate);
-    // const currentDate = new Date();
-
-    // if (currentDate > endBookingDate) {
-    // 	const err = new Error("Past bookings can't be modified");
-    // 	err.status = 403;
-    // 	return next(err);
-    // }
-
-    //Booking conflict
-    const queryStartDate = await Booking.findOne({
+    //Check for booking conlficts
+    const queryDateConflict = await Booking.findAll({
       where: {
         spotId: getSpotById.id,
-        startDate: startDate
+        [Op.or]: [
+          {
+            startDate: {
+              [Op.between]: [startDate, endDate]
+            }
+          },
+          {
+            endDate: {
+              [Op.between]: [startDate, endDate]
+            }
+          },
+          {
+            [Op.and]: [
+              { startDate: { [Op.lte]: startDate } },
+              { endDate: { [Op.gte]: endDate } }
+            ]
+          }
+        ]
       }
     })
-    if (queryStartDate) {
+
+    if (queryDateConflict.length > 0) {
       const err = new Error(
         'Sorry, this spot is already booked for the specified dates'
       )
       err.errors = {
-        startDate: 'Start date conflicts with an existing booking'
-      }
-      err.status = 403
-      return next(err)
-    }
-    const queryEndDate = await Booking.findOne({
-      where: {
-        spotId: getSpotById.id,
-        endDate: endDate
-      }
-    })
-    if (queryEndDate) {
-      const err = new Error(
-        'Sorry, this spot is already booked for the specified dates'
-      )
-      err.errors = {
-        endDate: 'End date conflicts with an existing booking'
+        date: 'Sorry, this spot is already booked for the specified dates'
       }
       err.status = 403
       return next(err)
@@ -327,46 +325,55 @@ router.get('/:spotId/reviews', async (req, res, next) => {
 })
 
 // Add an Image to a Spot based on the Spot's id
-router.post('/:spotId/images', requireAuth, async (req, res, next) => {
-  // Get the current logged in users id
-  const { user } = req
-  let ownerId
-  if (user) {
-    ownerId = user.id
+router.post(
+  '/:spotId/images',
+  requireAuth,
+  singleMulterUpload('image'),
+  async (req, res, next) => {
+    // Get the current logged in users id
+    const { user } = req
+    let ownerId
+    if (user) {
+      ownerId = user.id
+    }
+
+    // Get the spot related to the provided spotId
+    const findSpotById = await Spot.findByPk(req.params.spotId)
+
+    // If provided spotId is not found respond with 404 error
+    if (!findSpotById) {
+      const err = new Error("Spot couldn't be found")
+      err.status = 404
+      return next(err)
+    }
+
+    // If provided spotId is not owned by the current logged in user respond with 403 error
+    if (findSpotById.ownerId !== ownerId) {
+      const err = new Error('Forbidden')
+      err.status = 403
+      return next(err)
+    }
+
+    // Get image info from the request body
+    const { preview } = req.body
+    const imageUrl = req.file
+      ? await singleFileUpload({ file: req.file, public: true })
+      : null
+    console.log(url)
+    const newSpotImage = await SpotImage.create({
+      spotId: req.params.spotId,
+      url: imageUrl,
+      preview
+    })
+
+    // Return information on the new image for associated spot
+    return res.json({
+      id: newSpotImage.id,
+      url: newSpotImage.url,
+      preview: newSpotImage.preview
+    })
   }
-
-  // Get the spot related to the provided spotId
-  const findSpotById = await Spot.findByPk(req.params.spotId)
-
-  // If provided spotId is not found respond with 404 error
-  if (!findSpotById) {
-    const err = new Error("Spot couldn't be found")
-    err.status = 404
-    return next(err)
-  }
-
-  // If provided spotId is not owned by the current logged in user respond with 403 error
-  if (findSpotById.ownerId !== ownerId) {
-    const err = new Error('Forbidden')
-    err.status = 403
-    return next(err)
-  }
-
-  // Get image info from the request body
-  const { url, preview } = req.body
-  const newSpotImage = await SpotImage.create({
-    spotId: req.params.spotId,
-    url,
-    preview
-  })
-
-  // Return information on the new image for associated spot
-  return res.json({
-    id: newSpotImage.id,
-    url: newSpotImage.url,
-    preview: newSpotImage.preview
-  })
-})
+)
 
 // Get all Spots owned by the Current User
 router.get('/current', requireAuth, async (req, res) => {
@@ -750,19 +757,18 @@ router.get('/', validateQueryFilters, async (req, res, next) => {
 
     // Get Preview Image of Spot
     const previewImage = await SpotImage.findOne({
-			where: {
-				spotId: spot.id,
+      where: {
+        spotId: spot.id,
         preview: true
       },
       attributes: ['url']
-		})
+    })
 
-		if (!previewImage) {
-			spot.previewImage = null
-		} else {
-			spot.previewImage = previewImage.toJSON().url;
-		}
-
+    if (!previewImage) {
+      spot.previewImage = null
+    } else {
+      spot.previewImage = previewImage.toJSON().url
+    }
 
     // Build the requested spot data object
     const spotData = {
