@@ -18,7 +18,7 @@ export default function CreateSpot ({ isEdit }) {
   const [title, setTitle] = useState('')
   const [price, setPrice] = useState('')
   const [imageUrl, setImageUrl] = useState({})
-  const [url, setUrl] = useState('')
+  const [url, setUrl] = useState(null)
   const [preview, setPreview] = useState(true)
   const [errors, setErrors] = useState({})
 
@@ -33,7 +33,7 @@ export default function CreateSpot ({ isEdit }) {
         setDescription(spot.descriptions)
         setTitle(spot.name)
         setPrice(spot.price)
-        setUrl(spot.SpotImages.filter(image => image.preview === true)[0].url)
+        // setUrl(spot.SpotImages.filter(image => image.preview === true)[0].url)
       })()
     if (!isEdit) reset()
   }, [isEdit])
@@ -45,8 +45,13 @@ export default function CreateSpot ({ isEdit }) {
     }))
   }
 
+  const updateFile = e => {
+    const file = e.target.files[0]
+    if (file) setUrl(file)
+  }
+
   const handleSubmit = async e => {
-    const validImgFormats = ['jpg', 'png', 'jpeg']
+    // const validImgFormats = ['jpg', 'png', 'jpeg']
     e.preventDefault()
     const error = {}
 
@@ -58,22 +63,22 @@ export default function CreateSpot ({ isEdit }) {
       error.description = 'Description needs 30 or more characters'
     if (!title) error.title = 'Name is required'
     if (!price) error.price = 'Price is required'
-    if (!url) error.previewImageUrl = 'Preview image is required'
+    // if (!url) error.previewImageUrl = 'Preview image is required'
 
     // ==TODO== Check that urls have image format
-    if (Object.keys(imageUrl).length || url.length) {
-      Object.values(imageUrl).forEach((image, idx) => {
-        const extension = image.toLowerCase().slice(-5).split('.')[1]
-        if (validImgFormats.includes(extension) === false)
-          error.imageExtension =
-            'One or more image format incorrect. (.jpg, .jpeg, or .png)'
-      })
-      if (
-        validImgFormats.includes(url.toLowerCase().slice(-5).split('.')[1]) ===
-        false
-      )
-        error.previewImageUrl = 'Image format incorrect. (.jpg, .jpeg, or .png)'
-    }
+    // if (Object.keys(imageUrl).length || url.length) {
+    //   Object.values(imageUrl).forEach((image, idx) => {
+    //     const extension = image.toLowerCase().slice(-5).split('.')[1]
+    //     if (validImgFormats.includes(extension) === false)
+    //       error.imageExtension =
+    //         'One or more image format incorrect. (.jpg, .jpeg, or .png)'
+    //   })
+    //   if (
+    //     validImgFormats.includes(url.toLowerCase().slice(-5).split('.')[1]) ===
+    //     false
+    //   )
+    //     error.previewImageUrl = 'Image format incorrect. (.jpg, .jpeg, or .png)'
+    // }
 
     setErrors(error)
 
@@ -86,7 +91,7 @@ export default function CreateSpot ({ isEdit }) {
           state,
           description,
           title,
-          price
+          price,
         })
       )
       const spotId = await res.id
@@ -123,7 +128,7 @@ export default function CreateSpot ({ isEdit }) {
     setDescription('')
     setTitle('')
     setPrice(0)
-    setUrl('')
+    // setUrl('')
     setImageUrl('')
   }
 
@@ -138,7 +143,7 @@ export default function CreateSpot ({ isEdit }) {
             reservation.
           </p>
 
-          <form className='create-spot-form' onSubmit={handleSubmit}>
+          <form className='create-spot-form' encType="multipart/form-data" onSubmit={handleSubmit}>
             {/* Country */}
             <label>
               <span className='small medium'>Country</span>
@@ -267,11 +272,10 @@ export default function CreateSpot ({ isEdit }) {
             <h4>Liven up your spot with photos</h4>
             <p>Submit a link to at least one photo to publish your spot.</p>
             <input
-              type='url'
+              type='file'
               placeholder='Preview image URL'
               name='previewImageUrl'
-              value={url}
-              onChange={e => setUrl(e.target.value)}
+              onChange={updateFile}
             />
             <div>
               <span className='small medium validation-errors'>

@@ -1,36 +1,37 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import * as spotActions from '../../../store/spot'
+import * as spotActions from '../../store/spot'
 import './SpotReservation.css'
 
-export default function SpotReservation ({ spotId, userId }) {
+export default function SpotReservation ({ spotId, sessionUser }) {
   const dispatch = useDispatch()
-  const [startDate, setStartDate] = useState(new Date())
-  const [endDate, setEndDate] = useState(new Date())
-  const [guests, setGuests] = useState(1)
-  const [errors, setErrors] = useState({})
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
+  const currentDate = new Date().toISOString().split('T')[0]; // Get the current date in 'YYYY-MM-DD' format
 
   // RESERVATION FORM SUBMITED
   const handleSubmit = e => {
     e.preventDefault()
-
-    // FRONT END ERROR HANDLING
+    
     const error = {}
-    // if (!startDate) error.country = 'Check-in date is required'
-    // if (!endDate) error.address = 'Checkout date is required'
-    // if (!guests) error.city = 'Guest is required'
-    // setErrors(error)
+    // FRONT END ERROR HANDLING
+    if (!sessionUser) error.user = 'You must be logged in to make a booking'
+    if (!startDate) error.checkin = 'Check-in date is required'
+    if (!endDate) error.checkout = 'Checkout date is required'
+    
+    if(Object.keys(error).length) return window.alert(Object.values(error))
 
     // DISPATCH RESERVATION TO ACTION THUNK
-    return dispatch(
-      spotActions.postSpotBooking({ startDate, endDate, guests, spotId })
-    ).catch(async res => {
-      const data = await res.json()
-      if (data && data.message) {
-        setErrors(data.message)
-        window.alert(data.message)
-      }
-    })
+    if (!Object.keys(error).length) {
+      return dispatch(
+        spotActions.postSpotBooking({ startDate, endDate, spotId })
+      ).catch(async res => {
+        const data = await res.json()
+        if (data && data.errors) {
+          return window.alert(Object.values(data.errors))
+        }
+      }).then(() => window.alert("Booking created successfully!"))
+    }
   }
 
   return (
@@ -44,6 +45,7 @@ export default function SpotReservation ({ spotId, userId }) {
                 type='date'
                 placeholder='Add date'
                 name='startDate'
+                min={currentDate}
                 value={startDate}
                 onChange={e => setStartDate(e.target.value)}
               />
@@ -54,11 +56,12 @@ export default function SpotReservation ({ spotId, userId }) {
                 type='date'
                 placeholder='Add date'
                 name='endDate'
+                min={startDate}
                 value={endDate}
                 onChange={e => setEndDate(e.target.value)}
               />
             </label>
-            <label className='tiny bold'>
+            {/* <label className='tiny bold'>
               GUESTS
               <select value={guests} onChange={e => setGuests(e.target.value)}>
                 {[...Array(8)].map((guest, idx) => {
@@ -70,12 +73,10 @@ export default function SpotReservation ({ spotId, userId }) {
                   )
                 })}
               </select>
-            </label>
+            </label> */}
             <div>
               {/* <button className='red-button medium' type='submit'>Check availability</button> */}
-              <button
-                className='red-button medium'
-                type="submit">
+              <button className='red-button medium' type='submit'>
                 Reserve
               </button>
             </div>

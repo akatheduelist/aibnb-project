@@ -5,7 +5,7 @@ import dateFormat from 'dateformat'
 import OpenModalMenuItem from '../Navigation/OpenModalMenuItem'
 import DeleteReviewModal from '../DeleteReviewModal'
 import PostReviewModal from '../PostReviewModal'
-import SpotReservation from './SpotReservation/SpotReservation'
+import SpotReservation from './SpotReservation'
 import * as spotActions from '../../store/spot'
 import * as reviewActions from '../../store/review'
 import './SpotDetail.css'
@@ -100,7 +100,7 @@ export default function SpotDetail () {
           <div className='image-gallery'>
             <img className='image default-image' src={defaultImage} />
             {SpotImages?.map(image => (
-              <img className='image spot-images' src={image.url}></img>
+              <img key={image.id} className='image spot-images' src={image.url}></img>
             ))}
           </div>
           <div className='spot-description-container'>
@@ -131,7 +131,7 @@ export default function SpotDetail () {
                   ) : null}
                 </div>
               </div>
-              <SpotReservation userId={sessionUser.id} spotId={parseInt(spotId)} />
+              <SpotReservation sessionUser={sessionUser} spotId={parseInt(spotId)} />
             </div>
           </div>
           <hr />
@@ -168,7 +168,7 @@ export default function SpotDetail () {
           </div>
 
           {reviewsBySpotId?.toReversed().map(review => (
-            <div>
+            <div key={review.id}>
               <h3>{review.User.firstName}</h3>
               <div>{dateFormat(review.createdAt, 'mmmm yyyy')}</div>
               <div>{review.review}</div>

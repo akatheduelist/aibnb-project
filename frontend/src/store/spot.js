@@ -76,12 +76,14 @@ export const postSpot =
 export const postSpotImage =
   ({ url, preview, spotId }) =>
   async dispatch => {
+    console.log(preview, url)
+    const formData = new FormData()
+    formData.append('preview', preview)
+    if (url) formData.append('url', url)
+    console.log(formData)
     const res = await csrfFetch(`/api/spots/${spotId}/images`, {
       method: 'POST',
-      body: JSON.stringify({
-        url,
-        preview
-      })
+      body: formData
     })
 
     if (res.ok) {
@@ -90,15 +92,15 @@ export const postSpotImage =
     }
   }
 
+// POST a new booking for a spot
 export const postSpotBooking =
-  ({ startDate, endDate, userId, guests, spotId }) =>
+  ({ startDate, endDate, spotId }) =>
   async dispatch => {
     const res = await csrfFetch(`/api/spots/${spotId}/bookings`, {
       method: 'POST',
       body: JSON.stringify({
         startDate,
-        endDate,
-        spotId
+        endDate
       })
     })
 
