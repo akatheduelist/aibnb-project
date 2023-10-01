@@ -1,0 +1,41 @@
+.upcoming-booking-card {
+    display: flex;
+    width: 98%;
+    height: 14rem;
+    border: 2px solid pink;
+    border-radius: 10px;
+    margin: .85rem auto;
+}
+
+.upcoming-booking-text {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    padding: 1rem;
+}
+
+.upcoming-booking-title {
+    display: flex;
+    flex-direction: column;
+    height: 45%;
+    border-bottom: 2px solid red;
+    padding-bottom: 1rem;
+}
+
+.upcoming-booking-info {
+    display: flex;
+    padding-top: 1rem;
+}
+
+.upcoming-booking-date {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+    border-right: 2px solid purple;
+}
+
+.upcoming-booking-address {
+    display: flex;
+    flex-direction: column;
+    padding-left: 2.3rem;
+}
